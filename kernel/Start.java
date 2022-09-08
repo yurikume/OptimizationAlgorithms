@@ -6,7 +6,6 @@ public class Start
 {
 	public static void main(String[] args)
 	{
-		//La regina elisabetta è morta stecchita
 		String pathmps = ".\\MK\\INS_15_10_2v.dat";
 		String pathlog = ".";
 		String pathConfig = "config.txt";
