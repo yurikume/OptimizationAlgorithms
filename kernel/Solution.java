@@ -4,6 +4,7 @@ import java.util.Map;
 
 public class Solution
 {
+	//"metti un commento" Cit. michele
 	private double obj;
 	private Map<String, Double> vars;
 	private boolean empty;
