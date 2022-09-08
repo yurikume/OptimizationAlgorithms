@@ -6,7 +6,7 @@ public class Start
 {
 	public static void main(String[] args)
 	{
-		String anas = "stupido";
+		String pietro = "stupido";
 		String pathmps = ".\\MK\\INS_15_10_2v.dat";
 		String pathlog = ".";
 		String pathConfig = "config.txt";
