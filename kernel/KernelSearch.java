@@ -126,7 +126,8 @@ public class KernelSearch
 			
 			System.out.println("\n\n\n\t\t******** Iteration "+i+" ********\n\n\n");
 			solveBuckets();			
-		}		
+		}
+		System.out.println("Tempo totale:" + Duration.between(startTime, Instant.now()).getSeconds());
 	}
 
 	private void solveBuckets()
