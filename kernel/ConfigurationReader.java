@@ -50,6 +50,9 @@ public class ConfigurationReader
         				case 1:
         					config.setItemSorter(new ItemSorterByName());
         					break;
+        				case 2:
+        					config.setItemSorter(new ItemSorterRandom());
+        					break;
         				default:
         					System.out.println("Unrecognized item sorter.");
         			}
