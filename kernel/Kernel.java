@@ -30,4 +30,8 @@ public class Kernel
 	{
 		return items.size();
 	}
+	
+	public List<Item> getItems(){
+		return items;
+	}
 }

@@ -6,8 +6,7 @@ public class Start
 {
 	public static void main(String[] args)
 	{
-		//String pathmps = ".\\MK\\INS_15_10_2v.dat";
-		String pathmps = "C:\\Users\\pietr\\OneDrive\\Desktop\\instances\\50\\INS_15_10_2v.dat";
+		String pathmps = ".\\MK\\INS_10_10_1v.dat";
 		String pathlog = ".";
 		String pathConfig = "config.txt";
 		Configuration config = ConfigurationReader.read(pathConfig);		

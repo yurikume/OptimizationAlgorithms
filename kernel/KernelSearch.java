@@ -56,9 +56,13 @@ public class KernelSearch
 		callback = new CustomCallback(logPath, startTime);
 		items = buildItems();
 		sorter.sort(items);	
+		
+		System.out.println("****** Items dopo il sorting:");
+		System.out.println("Num items = " + items.size());
 		/*for(Item it: items) {
-			System.out.println(it.getName() + " :" + it.getRc());
+			System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr());
 		}*/
+		
 		kernel = kernelBuilder.build(items, config);
 		buckets = bucketBuilder.build(items.stream().filter(it -> !kernel.contains(it)).collect(Collectors.toList()), config);
 		solveKernel();
@@ -100,6 +104,14 @@ public class KernelSearch
 		List<Item> toDisable = items.stream().filter(it -> !kernel.contains(it)).collect(Collectors.toList());
 		model.disableItems(toDisable);
 		model.setCallback(callback);
+		
+		System.out.println("****** Items su cui opera il kernel :");
+		System.out.println("Num items = " + model.getVarNames().size());
+		/*
+		for(String it: model.getVarNames()) {
+			System.out.println(it + " :" + model.getVarRC(it) + " - value = " + model.getVarValue(it));
+		}*/
+		
 		model.solve();
 		if(model.hasSolution())
 		{
@@ -145,6 +157,13 @@ public class KernelSearch
 			model.disableItems(toDisable);
 			model.addBucketConstraint(b.getItems()); // can we use this constraint regardless of the type of variables chosen as items?
 			
+			System.out.println("****** Items su cui opera il bucket " + count + " :");
+			System.out.println("Num items = " + b.getItems().size());
+			
+			for(Item it: b.getItems()) {
+				System.out.println(it.getName());
+			}
+			
 			if(!bestSolution.isEmpty())
 			{
 				model.addObjConstraint(bestSolution.getObj());		
@@ -160,6 +179,14 @@ public class KernelSearch
 				List<Item> selected = model.getSelectedItems(b.getItems());
 				selected.forEach(it -> kernel.addItem(it));
 				selected.forEach(it -> b.removeItem(it));
+				
+				System.out.println("****** Items aggiunti nel bucket " + count + " :");
+				for(String it: model.getVarNames()) {
+					if(model.getVarValue(it) == 1.0) {
+						System.out.println(it + " :" + model.getVarRC(it) + " - value = " + model.getVarValue(it));
+					}
+				}
+				
 				model.exportSolution();
 			}
 			if(!bestSolution.isEmpty())
