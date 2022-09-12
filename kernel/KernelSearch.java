@@ -180,11 +180,13 @@ public class KernelSearch
 				selected.forEach(it -> kernel.addItem(it));
 				selected.forEach(it -> b.removeItem(it));
 				
-				System.out.println("****** Items aggiunti nel bucket " + count + " :");
-				for(String it: model.getVarNames()) {
-					if(model.getVarValue(it) == 1.0) {
-						System.out.println(it + " :" + model.getVarRC(it) + " - value = " + model.getVarValue(it));
-					}
+				System.out.println("****** Items rimasti nel bucket " + count + " :");
+				for(Item it: b.getItems()) {
+					System.out.println(it.getName() + " - value = " + model.getVarValue(it.getName()));
+				}
+				System.out.println("****** Items selezionati del bucket " + count + " :");
+				for(Item it: selected) {
+					System.out.println(it.getName() + " - value = " + model.getVarValue(it.getName()));
 				}
 				
 				model.exportSolution();
