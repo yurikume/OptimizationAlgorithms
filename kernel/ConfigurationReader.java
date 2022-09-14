@@ -53,6 +53,9 @@ public class ConfigurationReader
         				case 2:
         					config.setItemSorter(new ItemSorterRandom());
         					break;
+        				case 3:
+        					config.setItemSorter(new ItemSorterRandomXbyY());
+        					break;
         				default:
         					System.out.println("Unrecognized item sorter.");
         			}
@@ -71,6 +74,9 @@ public class ConfigurationReader
         					break;
         				case 1:
         					config.setBucketBuilder(new VariableSizeBucketBuilder());
+        					break;
+        				case 2:
+        					config.setBucketBuilder(new OverlappingBucketBuilder());
         					break;
         				default:
         					System.out.println("Unrecognized bucket builder.");
