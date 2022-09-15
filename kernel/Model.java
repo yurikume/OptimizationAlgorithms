@@ -410,6 +410,7 @@ public class Model
 	{
 		try
 		{
+			System.out.println("sol = " + obj);
 			model.getEnv().set(GRB.DoubleParam.Cutoff, obj);
 		} catch (GRBException e)
 		{

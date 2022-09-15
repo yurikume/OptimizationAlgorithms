@@ -94,7 +94,6 @@ public class KernelSearch
 		model.buildModel();
 		objValues.add(new ArrayList<>());
 		
-		
 		if(!bestSolution.isEmpty())
 		{
 			model.addObjConstraint(bestSolution.getObj());		
@@ -160,9 +159,9 @@ public class KernelSearch
 			System.out.println("****** Items su cui opera il bucket " + count + " :");
 			System.out.println("Num items = " + b.getItems().size());
 			
-			for(Item it: b.getItems()) {
+			/*for(Item it: b.getItems()) {
 				System.out.println(it.getName());
-			}
+			}*/
 			
 			if(!bestSolution.isEmpty())
 			{
@@ -181,13 +180,13 @@ public class KernelSearch
 				selected.forEach(it -> b.removeItem(it));
 				
 				System.out.println("****** Items rimasti nel bucket " + count + " :");
-				for(Item it: b.getItems()) {
+				/*for(Item it: b.getItems()) {
 					System.out.println(it.getName() + " - value = " + model.getVarValue(it.getName()));
 				}
 				System.out.println("****** Items selezionati del bucket " + count + " :");
 				for(Item it: selected) {
 					System.out.println(it.getName() + " - value = " + model.getVarValue(it.getName()));
-				}
+				}*/
 				
 				model.exportSolution();
 			}
