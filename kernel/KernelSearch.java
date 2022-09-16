@@ -179,6 +179,27 @@ public class KernelSearch
 				selected.forEach(it -> kernel.addItem(it));
 				selected.forEach(it -> b.removeItem(it));
 				
+				// Compute the ratio between the profit and the weight and select the promising items
+				int i,j,t,c,a;
+				float threshold = (float) 1.05;
+				float ratio;
+				for(Item it : b.getItems()) {
+					String name = it.getName();
+					if(name.startsWith("x")) {
+						String vars[]= name.split("_");
+						i = Integer.parseInt(vars[1]);
+						j = Integer.parseInt(vars[2]);
+						t = Integer.parseInt(vars[3]);
+			            c = model.getProfit(i, j, t);
+			            a = model.getWeight(i, j);
+			            ratio = (float)c/a;
+			            System.out.println(String.format("%s, ratio: %.4f, c: %d, a: %d ",name,ratio,c,a));
+			            if(ratio > threshold) {
+			            	kernel.addItem(it);
+			            }
+					}	
+				}
+				
 				System.out.println("****** Items rimasti nel bucket " + count + " :");
 				/*for(Item it: b.getItems()) {
 					System.out.println(it.getName() + " - value = " + model.getVarValue(it.getName()));

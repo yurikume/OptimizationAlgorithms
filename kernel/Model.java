@@ -28,9 +28,16 @@ public class Model
 	private GRBModel model;
 	private boolean hasSolution;
 	private double positiveThreshold = 1e-5;
+	private int c[][][];
+	private int aij[][];
+	private final int maxT = 20;
+	private final int maxN = 30;
+	private final int maxNItems = 60;
 	
 	public Model(String mpsFilePath, String logPath, int timeLimit, Configuration config, boolean lpRelaxation)
 	{
+		this.c = new int[maxN][maxNItems][maxT];
+		this.aij = new int[maxN][maxT];
 		this.mpsFilePath = mpsFilePath;
 		this.logPath = logPath;
 		this.timeLimit = timeLimit;	
@@ -105,7 +112,7 @@ public class Model
 		    		nTot += ni[i];
 		    	}		
 			 }
-		    
+		     this.c = c;
 		    
 		     line=reader.readLine();
 		     num=line.split(" ");
@@ -140,6 +147,7 @@ public class Model
 		    	 //System.out.println();
 		    	 nTot = nTot + ni[i];
 		     }	
+		     this.aij = aij;
 		     
 		    // Variables
 		    ArrayList<ArrayList<ArrayList<GRBVar>>> x = new ArrayList<>();
@@ -438,5 +446,13 @@ public class Model
 	public void setCallback(GRBCallback callback)
 	{
 		model.setCallback(callback);
+	}
+	
+	public int getProfit(int i, int j, int t) {
+		return this.c[i][j][t];
+	}
+	
+	public int getWeight(int i, int j) {
+		return this.aij[i][j];
 	}
 }
