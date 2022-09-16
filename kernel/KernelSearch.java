@@ -159,9 +159,9 @@ public class KernelSearch
 			System.out.println("****** Items su cui opera il bucket " + count + " :");
 			System.out.println("Num items = " + b.getItems().size());
 			
-			/*for(Item it: b.getItems()) {
+			for(Item it: b.getItems()) {
 				System.out.println(it.getName());
-			}*/
+			}
 			
 			if(!bestSolution.isEmpty())
 			{

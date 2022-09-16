@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PercentageKernelBuilder implements KernelBuilder
+public class KernelBuilderByName implements KernelBuilder
 {
 	@Override
 	public Kernel build(List<Item> items, Configuration config)

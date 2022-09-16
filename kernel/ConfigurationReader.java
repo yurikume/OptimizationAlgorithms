@@ -82,7 +82,7 @@ public class ConfigurationReader
         					config.setBucketBuilder(new OverlappingBucketBuilder2());
         					break;
         				case 4:
-        					config.setBucketBuilder(new PercentageBucketBuilder());
+        					config.setBucketBuilder(new BucketBuilderByName());
         					break;
         				default:
         					System.out.println("Unrecognized bucket builder.");
@@ -107,7 +107,7 @@ public class ConfigurationReader
         					config.setKernelBuilder(new KernelBuilderPercentage());
         					break;
         				case 2:
-        					config.setKernelBuilder(new PercentageKernelBuilder());
+        					config.setKernelBuilder(new KernelBuilderByName());
         					break;
         				default:
         					System.out.println("Unrecognized kernel builder.");
