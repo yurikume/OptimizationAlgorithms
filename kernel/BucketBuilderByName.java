@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 public class BucketBuilderByName implements BucketBuilder
 {
+	// Also here we put a percentage of y items and their corresponding x in the same bucket
 	@Override
 	public List<Bucket> build(List<Item> items, Configuration config)
 	{
@@ -15,7 +16,8 @@ public class BucketBuilderByName implements BucketBuilder
 		int size = (int) Math.floor(items.size()*config.getBucketSize());
 		
 		List<Item> y_items=items.stream().filter(p -> p.getName().startsWith("y")).collect(Collectors.toList());
-		int y_da_prendere = (int) Math.floor(y_items.size()/(items.size()/size));
+		int y_da_prendere = (int) Math.floor(y_items.size()/(items.size()/size)); 
+		// like doing y_items.size() * config.getBucketSize(), so it means i take a percentage of y variables to put in the bucket
 		int i = 0;
 		
 		while(y_items.size()>0) {
@@ -24,7 +26,7 @@ public class BucketBuilderByName implements BucketBuilder
 			List<Item> x_list = new ArrayList<Item>();
 	
 			if(i < y_items.size()) {
-				for(i=0; i<y_da_prendere; i++) {			
+				for(i=0; i < y_da_prendere; i++) {			
 					Item y_item = y_items.get(i);
 					y_items.remove(i);
 					b.addItem(y_item);

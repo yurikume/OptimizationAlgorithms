@@ -15,4 +15,3 @@ public class Start
 		List<List<Double>> objValues = ks.getObjValues();	
 	}
 }
-

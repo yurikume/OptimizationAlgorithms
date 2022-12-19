@@ -181,8 +181,9 @@ public class KernelSearch
 				
 				// Compute the ratio between the profit and the weight and select the promising items
 				int i,j,t,c,a;
-				float threshold = (float) 1.05;
+				float threshold = (float) 1.05; // Problem: choose the right threshold
 				float ratio;
+				// We iterate over the remaining items in the bucket, i.e. the ones that have not been selected 
 				for(Item it : b.getItems()) {
 					String name = it.getName();
 					if(name.startsWith("x")) {
