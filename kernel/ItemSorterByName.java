@@ -23,6 +23,9 @@ public class ItemSorterByName implements ItemSorter
 			x_list = items.stream().filter(p -> p.getName().startsWith("x_"+fam) && p.getName().endsWith("_"+knap)).collect(Collectors.toList());
 			
 			fin_item.add(y_it);
+			// Riordino anche le x in base alla goodness
+			x_list.sort(Comparator.comparing(Item::getXr).reversed()
+					.thenComparing(Item::getGoodness).reversed());
 			fin_item.addAll(x_list);
 		}
 		items.clear();

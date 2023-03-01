@@ -57,11 +57,20 @@ public class KernelSearch
 		items = buildItems();
 		sorter.sort(items);	
 		
+		// Stampa degli items con i loro dati
 		System.out.println("****** Items dopo il sorting:");
 		System.out.println("Num items = " + items.size());
-		/*for(Item it: items) {
-			System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr());
-		}*/
+		int a,c;
+		double perc_good;
+		for(Item it: items) {
+			a = it.getA();
+			c = it.getC();
+			// Calcoliamo la differenza percentuale, che è una misura da massimizzare. Preferiamo in questo modo item
+			// con peso piccolo e differenza tra profitto e peso elevata, che abbiamo visto anche dalle soluzioni essere
+			// i migliori
+			perc_good = it.getGoodness();
+			System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - c = " + c + " - a = " + a + " - good% = " + perc_good);
+		}
 		
 		kernel = kernelBuilder.build(items, config);
 		buckets = bucketBuilder.build(items.stream().filter(it -> !kernel.contains(it)).collect(Collectors.toList()), config);
@@ -78,11 +87,25 @@ public class KernelSearch
 		model.solve();
 		List<Item> items = new ArrayList<>();
 		List<String> varNames = model.getVarNames();
+		int i,j,t,c,a;
 		for(String v : varNames)
 		{
 			double value = model.getVarValue(v);
 			double rc = model.getVarRC(v); // can be called only after solving the LP relaxation
-			Item it = new Item(v, value, rc);
+			Item it;
+			
+			if(v.startsWith("x")) {
+				String vars[]= v.split("_");
+				i = Integer.parseInt(vars[1]);
+				j = Integer.parseInt(vars[2]);
+				t = Integer.parseInt(vars[3]);
+	            c = model.getProfit(i, j, t);
+	            a = model.getWeight(i, j);
+				it = new Item(v, value, rc, c, a);
+			}else { // è un item y, ci metto dei valori standard per ora
+				it = new Item(v, value, rc, 1, 1);
+			}
+				
 			items.add(it);
 		}
 		return items;
@@ -106,10 +129,10 @@ public class KernelSearch
 		
 		System.out.println("****** Items su cui opera il kernel :");
 		System.out.println("Num items = " + model.getVarNames().size());
-		/*
-		for(String it: model.getVarNames()) {
-			System.out.println(it + " :" + model.getVarRC(it) + " - value = " + model.getVarValue(it));
-		}*/
+		
+//		for(String it: model.getVarNames()) {
+//			System.out.println(it + " :" + model.getVarRC(it) + " - value = " + model.getVarValue(it));
+//		}
 		
 		model.solve();
 		if(model.hasSolution())
@@ -159,9 +182,9 @@ public class KernelSearch
 			System.out.println("****** Items su cui opera il bucket " + count + " :");
 			System.out.println("Num items = " + b.getItems().size());
 			
-			for(Item it: b.getItems()) {
-				System.out.println(it.getName());
-			}
+//			for(Item it: b.getItems()) {
+//				System.out.println(it.getName());
+//			}
 			
 			if(!bestSolution.isEmpty())
 			{
@@ -179,36 +202,36 @@ public class KernelSearch
 				selected.forEach(it -> kernel.addItem(it));
 				selected.forEach(it -> b.removeItem(it));
 				
+				// INIZIO MODIFICA
 				// Compute the ratio between the profit and the weight and select the promising items
-				int i,j,t,c,a;
-				float threshold = (float) 1.05; // Problem: choose the right threshold
-				float ratio;
+				double perc_good;
+				double threshold = 0.05; // è un esempio
+				int a,c;
 				// We iterate over the remaining items in the bucket, i.e. the ones that have not been selected 
 				for(Item it : b.getItems()) {
 					String name = it.getName();
 					if(name.startsWith("x")) {
-						String vars[]= name.split("_");
-						i = Integer.parseInt(vars[1]);
-						j = Integer.parseInt(vars[2]);
-						t = Integer.parseInt(vars[3]);
-			            c = model.getProfit(i, j, t);
-			            a = model.getWeight(i, j);
-			            ratio = (float)c/a;
-			            System.out.println(String.format("%s, ratio: %.4f, c: %d, a: %d ",name,ratio,c,a));
-			            if(ratio > threshold) {
+			            c = it.getC();
+			            a = it.getA();
+						perc_good = it.getGoodness();
+			            System.out.println(String.format("%s, good_perc: %f, c: %d, a: %d ",name,perc_good,c,a));
+			            if(perc_good > threshold) {
+				            System.out.println("Item " + name + " aggiunto!");
 			            	kernel.addItem(it);
 			            }
 					}	
 				}
 				
-				System.out.println("****** Items rimasti nel bucket " + count + " :");
-				/*for(Item it: b.getItems()) {
+				/*System.out.println("****** Items rimasti nel bucket " + count + " :");
+				for(Item it: b.getItems()) {
 					System.out.println(it.getName() + " - value = " + model.getVarValue(it.getName()));
 				}
 				System.out.println("****** Items selezionati del bucket " + count + " :");
 				for(Item it: selected) {
 					System.out.println(it.getName() + " - value = " + model.getVarValue(it.getName()));
 				}*/
+				
+				// FINE MODIFICA
 				
 				model.exportSolution();
 			}
@@ -217,7 +240,6 @@ public class KernelSearch
 			else
 				objValues.get(objValues.size()-1).add(0.0);
 				
-			
 			if(getRemainingTime() <= timeThreshold)
 				return;
 		}	
