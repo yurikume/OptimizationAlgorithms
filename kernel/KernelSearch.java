@@ -69,8 +69,8 @@ public class KernelSearch
 	        int a,c;
 		    double perc_good;
 		    for(Item it: items) {
-				a = it.getProfit();
-				c = it.getWeight();
+				a = it.getWeight();
+				c = it.getProfit();
 				// Calcoliamo la differenza percentuale, che è una misura da massimizzare. Preferiamo in questo modo item
 				// con peso piccolo e differenza tra profitto e peso elevata, che abbiamo visto anche dalle soluzioni essere
 				// i migliori

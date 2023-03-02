@@ -6,7 +6,7 @@ public class Item
 	private double xr;
 	private int profit;
 	private int weight;
-	private double goodness;
+	private double goodness; // Cambiare per le famiglie
 	
 	public Item(String name, double xr, double rc, int profit, int weight)
 	{
