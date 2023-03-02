@@ -115,7 +115,7 @@ public class KernelSearch
 	            c = model.getProfit(i, j, t);
 	            a = model.getWeight(i, j);
 				it = new Item(v, value, rc, c, a);
-			}else { // è un item y, ci metto dei valori standard per ora
+			}else { // è un item y
 				String vars[]= v.split("_");
 				i = Integer.parseInt(vars[1]);
 				t = Integer.parseInt(vars[2]);
