@@ -30,6 +30,8 @@ public class Model
 	private double positiveThreshold = 1e-5;
 	private int c[][][];
 	private int aij[][];
+	private int fit[][];
+	private int di[];
 	private final int maxT = 20;
 	private final int maxN = 30;
 	private final int maxNItems = 60;
@@ -37,7 +39,9 @@ public class Model
 	public Model(String mpsFilePath, String logPath, int timeLimit, Configuration config, boolean lpRelaxation)
 	{
 		this.c = new int[maxN][maxNItems][maxT];
-		this.aij = new int[maxN][maxT];
+		this.aij = new int[maxN][maxNItems]; // Controlla dimensioni
+		this.fit = new int[maxN][maxT];
+		this.di = new int[maxN];
 		this.mpsFilePath = mpsFilePath;
 		this.logPath = logPath;
 		this.timeLimit = timeLimit;	
@@ -125,6 +129,7 @@ public class Model
 		    	 }
 		    	 //System.out.println();
 		     }
+		     this.fit = fit;
 		     
 		     line=reader.readLine();
 		     num=line.split(" ");
@@ -132,6 +137,7 @@ public class Model
 		     for(int i=0; i < N;i++) {
 		    	 di[i]=Integer.parseInt(num[i]);
 		     }
+		     this.di = di;
 		     
 		     nTot = 0;
 		     line=reader.readLine();
@@ -459,5 +465,13 @@ public class Model
 	
 	public int getWeight(int i, int j) {
 		return this.aij[i][j];
+	}
+	
+	public int getSetupCost(int i, int t) {
+		return this.fit[i][t];
+	}
+	
+	public int getFamilyWeight(int i) {
+		return this.di[i];
 	}
 }

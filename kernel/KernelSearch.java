@@ -1,4 +1,7 @@
 package kernel;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -57,19 +60,29 @@ public class KernelSearch
 		items = buildItems();
 		sorter.sort(items);	
 		
-		// Stampa degli items con i loro dati
-		System.out.println("****** Items dopo il sorting:");
-		System.out.println("Num items = " + items.size());
-		int a,c;
-		double perc_good;
-		for(Item it: items) {
-			a = it.getA();
-			c = it.getC();
-			// Calcoliamo la differenza percentuale, che è una misura da massimizzare. Preferiamo in questo modo item
-			// con peso piccolo e differenza tra profitto e peso elevata, che abbiamo visto anche dalle soluzioni essere
-			// i migliori
-			perc_good = it.getGoodness();
-			System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - c = " + c + " - a = " + a + " - good% = " + perc_good);
+		// Stampa degli items con i loro dati in un file esterno
+		try {
+	        PrintWriter out = new PrintWriter("items_list.txt");
+	        out.println("****** Items dopo il sorting:");
+	        out.println("Num items = " + items.size());
+	        
+	        int a,c;
+		    double perc_good;
+		    for(Item it: items) {
+				a = it.getProfit();
+				c = it.getWeight();
+				// Calcoliamo la differenza percentuale, che è una misura da massimizzare. Preferiamo in questo modo item
+				// con peso piccolo e differenza tra profitto e peso elevata, che abbiamo visto anche dalle soluzioni essere
+				// i migliori
+				perc_good = it.getGoodness();
+				out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - c = " + c + " - a = " + a + " - good% = " + perc_good);
+		    }
+
+	        out.close();  
+	      	System.out.println("Successfully wrote to the file.");
+	    }catch (IOException e) {
+	      System.out.println("An error occurred.");
+	      e.printStackTrace();
 		}
 		
 		kernel = kernelBuilder.build(items, config);
@@ -87,7 +100,7 @@ public class KernelSearch
 		model.solve();
 		List<Item> items = new ArrayList<>();
 		List<String> varNames = model.getVarNames();
-		int i,j,t,c,a;
+		int i,j,t,c,a,f,d;
 		for(String v : varNames)
 		{
 			double value = model.getVarValue(v);
@@ -103,7 +116,12 @@ public class KernelSearch
 	            a = model.getWeight(i, j);
 				it = new Item(v, value, rc, c, a);
 			}else { // è un item y, ci metto dei valori standard per ora
-				it = new Item(v, value, rc, 1, 1);
+				String vars[]= v.split("_");
+				i = Integer.parseInt(vars[1]);
+				t = Integer.parseInt(vars[2]);
+				f = model.getSetupCost(i, t);
+				d = model.getFamilyWeight(i);
+				it = new Item(v, value, rc, f, d);
 			}
 				
 			items.add(it);
@@ -128,11 +146,11 @@ public class KernelSearch
 		model.setCallback(callback);
 		
 		System.out.println("****** Items su cui opera il kernel :");
-		System.out.println("Num items = " + model.getVarNames().size());
+		System.out.println("Num items = " + kernel.getItems().size());
 		
-//		for(String it: model.getVarNames()) {
-//			System.out.println(it + " :" + model.getVarRC(it) + " - value = " + model.getVarValue(it));
-//		}
+		for(Item it: kernel.getItems()) {
+			System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - good% = " + it.getGoodness());
+		}
 		
 		model.solve();
 		if(model.hasSolution())
@@ -182,9 +200,9 @@ public class KernelSearch
 			System.out.println("****** Items su cui opera il bucket " + count + " :");
 			System.out.println("Num items = " + b.getItems().size());
 			
-//			for(Item it: b.getItems()) {
-//				System.out.println(it.getName());
-//			}
+			for(Item it: b.getItems()) {
+				System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - good% = " + it.getGoodness());
+			}
 			
 			if(!bestSolution.isEmpty())
 			{
@@ -203,20 +221,20 @@ public class KernelSearch
 				selected.forEach(it -> b.removeItem(it));
 				
 				// INIZIO MODIFICA
-				// Compute the ratio between the profit and the weight and select the promising items
+				// Promising items chosen through the goodness measure
 				double perc_good;
-				double threshold = 0.05; // è un esempio
+				double threshold = 0.5; // è un esempio
 				int a,c;
 				// We iterate over the remaining items in the bucket, i.e. the ones that have not been selected 
 				for(Item it : b.getItems()) {
 					String name = it.getName();
 					if(name.startsWith("x")) {
-			            c = it.getC();
-			            a = it.getA();
+			            c = it.getProfit();
+			            a = it.getWeight();
 						perc_good = it.getGoodness();
 			            System.out.println(String.format("%s, good_perc: %f, c: %d, a: %d ",name,perc_good,c,a));
 			            if(perc_good > threshold) {
-				            System.out.println("Item " + name + " aggiunto!");
+				            System.out.println("Item " + name + " added!");
 			            	kernel.addItem(it);
 			            }
 					}	
