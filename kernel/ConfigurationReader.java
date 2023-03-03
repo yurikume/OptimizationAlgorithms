@@ -84,6 +84,9 @@ public class ConfigurationReader
         				case 4:
         					config.setBucketBuilder(new BucketBuilderByName());
         					break;
+        				case 5:
+        					config.setBucketBuilder(new BucketBuilderByGoodness());
+        					break;	
         				default:
         					System.out.println("Unrecognized bucket builder.");
         			}

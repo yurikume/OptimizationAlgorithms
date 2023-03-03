@@ -108,7 +108,7 @@ public class KernelSearch
 			Item it;
 			
 			if(v.startsWith("x")) {
-				String vars[]= v.split("_");
+				String vars[] = v.split("_");
 				i = Integer.parseInt(vars[1]);
 				j = Integer.parseInt(vars[2]);
 				t = Integer.parseInt(vars[3]);
@@ -228,16 +228,14 @@ public class KernelSearch
 				// We iterate over the remaining items in the bucket, i.e. the ones that have not been selected 
 				for(Item it : b.getItems()) {
 					String name = it.getName();
-					if(name.startsWith("x")) {
-			            c = it.getProfit();
-			            a = it.getWeight();
-						perc_good = it.getGoodness();
-			            System.out.println(String.format("%s, good_perc: %f, c: %d, a: %d ",name,perc_good,c,a));
-			            if(perc_good > threshold) {
-				            System.out.println("Item " + name + " added!");
-			            	kernel.addItem(it);
-			            }
-					}	
+					c = it.getProfit();
+		            a = it.getWeight();
+					perc_good = it.getGoodness();
+		            System.out.println(String.format("%s, good_perc: %f, c: %d, a: %d ",name,perc_good,c,a));
+//					if(name.startsWith("x") && perc_good > threshold) {
+//			            System.out.println("Item " + name + " added!");
+//		            	kernel.addItem(it);
+//					}	
 				}
 				
 				/*System.out.println("****** Items rimasti nel bucket " + count + " :");
