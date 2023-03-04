@@ -12,6 +12,7 @@ public class ItemSorterByName implements ItemSorter
 		items.sort(Comparator.comparing(Item::getXr)
 				.thenComparing(Item::getRc).reversed()); 
 		// Ordinati così vanno bene: a parità di value i costi ridotti sono in ordine decrescente
+		
 		List<Item> y_items=items.stream().filter(p -> p.getName().startsWith("y")).collect(Collectors.toList());
 		List<Item> fin_item = new ArrayList<Item>();
 		List<Item> x_list = new ArrayList<Item>();

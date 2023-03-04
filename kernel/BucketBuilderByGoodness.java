@@ -15,7 +15,7 @@ public class BucketBuilderByGoodness implements BucketBuilder {
 		int size = (int) Math.floor(items.size()*config.getBucketSize());
 		List<Item> y_items=items.stream().filter(p -> p.getName().startsWith("y")).collect(Collectors.toList());
 		List<Item> x_items=items.stream().filter(p -> p.getName().startsWith("x")).collect(Collectors.toList());
-		int limit_items = 20; // Il numero di items da prendere per ogni famiglia (sarà variabile)
+		int limit_items = 15; // Il numero di items da prendere per ogni famiglia (sarà variabile)
 		int index;
 		List<Item> x_list;
 		Item x_item;
