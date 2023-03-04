@@ -19,8 +19,10 @@ public class BucketBuilderByGoodness implements BucketBuilder {
 		int index;
 		List<Item> x_list;
 		Item x_item;
+		int count = 0;
+		int x_it_size = x_items.size();
 		
-		// Riempio la hashmap
+		// Riempio la hashmap 
 		for(Item it : y_items) {
 			String vars[]= it.getName().split("_");
             String fam = vars[1];
@@ -32,7 +34,7 @@ public class BucketBuilderByGoodness implements BucketBuilder {
 		
 		// Ciclo su tutte le chiavi(le y) della hashmap e per ognuna prendo 10 x e le rimuovo
 		// Finisco quando x_items è vuoto, cioè quando ho messo tutte le x in tutti i bucket
-		while(!x_items.isEmpty()) {
+		while(count < x_it_size) {
 			for(Item it : mappa.keySet()) {
 				b.addItem(it); // Qui dovrei controllare se la y c'è già nella soluzione perchè altrimenti la inserisco più volte
 				for(int i = 0; i < limit_items; i++) {
@@ -42,7 +44,7 @@ public class BucketBuilderByGoodness implements BucketBuilder {
 						x_item = mappa.get(it).get(0);
 						b.addItem(x_item);
 						mappa.get(it).remove(0);
-						x_items.remove(it); // Lo rimuovo anche da qui
+						count++;// Conta quanti item x vengono inseriti
 					}
 				}
 				if(b.size() >= size) { // Controllo solo alla fine se cambiare bucket
