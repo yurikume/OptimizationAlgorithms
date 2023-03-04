@@ -100,7 +100,7 @@ public class KernelSearch
 		model.solve();
 		List<Item> items = new ArrayList<>();
 		List<String> varNames = model.getVarNames();
-		int i,j,t,c,a,f,d;
+		int i,j,t,c,a,f,d;    
 		for(String v : varNames)
 		{
 			double value = model.getVarValue(v);
@@ -199,10 +199,23 @@ public class KernelSearch
 			
 			System.out.println("****** Items su cui opera il bucket " + count + " :");
 			System.out.println("Num items = " + b.getItems().size());
+			Bucket b_copy = new Bucket();
+			b_copy.copy(b.getItems());
 			
-			for(Item it: b.getItems()) {
+			for(Item it: b_copy.getItems()) {
+				if(it.getName().startsWith("y") && kernel.contains(it)) { // Se il kernel già contiene l'item non lo rimetto (per le y)
+					b.removeItem(it);
+					System.out.println("Item " + it.getName() + " rimosso");
+				}
 				System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - good% = " + it.getGoodness());
 			}
+			
+			System.out.println("****** Items contenuti nel kernel");
+			System.out.println("Num items = " + kernel.getItems().size());
+			
+//			for(Item it: kernel.getItems()) {
+//				System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - good% = " + it.getGoodness());
+//			}
 			
 			if(!bestSolution.isEmpty())
 			{
@@ -222,30 +235,31 @@ public class KernelSearch
 				
 				// INIZIO MODIFICA
 				// Promising items chosen through the goodness measure
-				double perc_good;
-				double threshold = 0.5; // è un esempio
-				int a,c;
-				// We iterate over the remaining items in the bucket, i.e. the ones that have not been selected 
-				for(Item it : b.getItems()) {
-					String name = it.getName();
-					c = it.getProfit();
-		            a = it.getWeight();
-					perc_good = it.getGoodness();
-		            System.out.println(String.format("%s, good_perc: %f, c: %d, a: %d ",name,perc_good,c,a));
+//				double perc_good;
+//				double threshold = 0.5; // è un esempio
+//				int a,c;
+//				// We iterate over the remaining items in the bucket, i.e. the ones that have not been selected 
+//				for(Item it : b.getItems()) {
+//					String name = it.getName();
+//					c = it.getProfit();
+//		            a = it.getWeight();
+//					perc_good = it.getGoodness();
+//		            System.out.println(String.format("%s, good_perc: %f, c: %d, a: %d ",name,perc_good,c,a));
 //					if(name.startsWith("x") && perc_good > threshold) {
 //			            System.out.println("Item " + name + " added!");
 //		            	kernel.addItem(it);
 //					}	
-				}
+//				}
 				
-				/*System.out.println("****** Items rimasti nel bucket " + count + " :");
-				for(Item it: b.getItems()) {
-					System.out.println(it.getName() + " - value = " + model.getVarValue(it.getName()));
-				}
-				System.out.println("****** Items selezionati del bucket " + count + " :");
+//				System.out.println("****** Items rimasti nel bucket " + count + " :");
+//				for(Item it: b.getItems()) {
+//					System.out.println(it.getName() + " - value = " + model.getVarValue(it.getName()));
+//				}
+				System.out.println("****** Items selezionati dal bucket " + count + " :");
+				System.out.println("Num items = " + selected.size());
 				for(Item it: selected) {
-					System.out.println(it.getName() + " - value = " + model.getVarValue(it.getName()));
-				}*/
+					System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - good% = " + it.getGoodness());
+				}
 				
 				// FINE MODIFICA
 				

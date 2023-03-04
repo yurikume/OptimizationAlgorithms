@@ -43,4 +43,10 @@ public class Bucket
 			}
 		}
 	}
+	
+	public void copy(List<Item> list) {
+		for(Item it : list) {
+			this.items.add(it);
+		}
+	}
 }

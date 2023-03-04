@@ -15,7 +15,7 @@ public class BucketBuilderByGoodness implements BucketBuilder {
 		int size = (int) Math.floor(items.size()*config.getBucketSize());
 		List<Item> y_items=items.stream().filter(p -> p.getName().startsWith("y")).collect(Collectors.toList());
 		List<Item> x_items=items.stream().filter(p -> p.getName().startsWith("x")).collect(Collectors.toList());
-		int limit_items = 10; // Il numero di items da prendere per ogni famiglia (sarà variabile)
+		int limit_items = 20; // Il numero di items da prendere per ogni famiglia (sarà variabile)
 		int index;
 		List<Item> x_list;
 		Item x_item;
@@ -37,6 +37,7 @@ public class BucketBuilderByGoodness implements BucketBuilder {
 		while(count < x_it_size) {
 			for(Item it : mappa.keySet()) {
 				b.addItem(it); // Qui dovrei controllare se la y c'è già nella soluzione perchè altrimenti la inserisco più volte
+				// Il controllo non può essere fatto qui, deve essere fatto nel metodo di kernel search
 				for(int i = 0; i < limit_items; i++) {
 					if(mappa.get(it).isEmpty()) { // Se è vuota vuol dire che per quella y ho già inserito tutte le x
 						break;
@@ -53,7 +54,6 @@ public class BucketBuilderByGoodness implements BucketBuilder {
 				}
 			}
 		}
-		
 		return buckets;
 	}
 
