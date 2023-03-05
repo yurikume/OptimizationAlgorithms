@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 public class BucketBuilderByGoodness implements BucketBuilder {
 
 	@Override
-	public List<Bucket> build(List<Item> items, Configuration config) {
+	public List<Bucket> build(List<Item> items, Configuration config,List<Item> y_ker) {
 		List<Bucket> buckets = new ArrayList<>();
 		Bucket b = new Bucket();
 		HashMap<Item,List<Item>> mappa = new HashMap<Item,List<Item>>();
@@ -21,6 +21,7 @@ public class BucketBuilderByGoodness implements BucketBuilder {
 		Item x_item;
 		int count = 0;
 		int x_it_size = x_items.size();
+		Boolean first_iter = true;
 		
 		// Riempio la hashmap 
 		for(Item it : y_items) {
@@ -36,7 +37,12 @@ public class BucketBuilderByGoodness implements BucketBuilder {
 		// Finisco quando x_items è vuoto, cioè quando ho messo tutte le x in tutti i bucket
 		while(count < x_it_size) {
 			for(Item it : mappa.keySet()) {
+				if(first_iter && y_ker.contains(it)) {
+					continue;
+				}
+				
 				b.addItem(it); // Qui dovrei controllare se la y c'è già nella soluzione perchè altrimenti la inserisco più volte
+				
 				// Il controllo non può essere fatto qui, deve essere fatto nel metodo di kernel search
 				for(int i = 0; i < limit_items; i++) {
 					if(mappa.get(it).isEmpty()) { // Se è vuota vuol dire che per quella y ho già inserito tutte le x
@@ -53,6 +59,7 @@ public class BucketBuilderByGoodness implements BucketBuilder {
 					b = new Bucket();
 				}
 			}
+			first_iter = false;
 		}
 		return buckets;
 	}

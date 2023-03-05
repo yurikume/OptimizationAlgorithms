@@ -85,8 +85,20 @@ public class KernelSearch
 	      e.printStackTrace();
 		}
 		
+//		kernel = kernelBuilder.build(items, config);
+//		buckets = bucketBuilder.build(items.stream().filter(it -> !kernel.contains(it)).collect(Collectors.toList()), config);
+		
+		// Solo kernel by goodness
 		kernel = kernelBuilder.build(items, config);
-		buckets = bucketBuilder.build(items.stream().filter(it -> !kernel.contains(it)).collect(Collectors.toList()), config);
+		List<Item> sel_items = items.stream().filter(it -> !kernel.contains(it)).collect(Collectors.toList());
+		List<Item> y_ker = items.stream().filter(it -> kernel.contains(it) && it.getName().startsWith("y")).collect(Collectors.toList());
+		for(Item it : kernel.getItems()) {
+			if(it.getName().startsWith("y")) {
+				sel_items.add(it);
+			}
+		}
+		sorter.sort(sel_items);
+		buckets = bucketBuilder.build(sel_items, config, y_ker);
 		solveKernel();
 		iterateBuckets();
 		
@@ -202,6 +214,7 @@ public class KernelSearch
 			Bucket b_copy = new Bucket();
 			b_copy.copy(b.getItems());
 			
+			// Aggiunta per builder by goodness
 			for(Item it: b_copy.getItems()) {
 				if(it.getName().startsWith("y") && kernel.contains(it)) { // Se il kernel già contiene l'item non lo rimetto (per le y)
 					b.removeItem(it);

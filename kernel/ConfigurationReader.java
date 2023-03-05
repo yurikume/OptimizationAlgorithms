@@ -112,6 +112,9 @@ public class ConfigurationReader
         				case 2:
         					config.setKernelBuilder(new KernelBuilderByName());
         					break;
+        				case 3:
+        					config.setKernelBuilder(new KernelBuilderByGoodness());
+        					break;
         				default:
         					System.out.println("Unrecognized kernel builder.");
         			}

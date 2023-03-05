@@ -7,7 +7,7 @@ public class BucketBuilderByName implements BucketBuilder
 {
 	// Also here we put a percentage of y items and their corresponding x in the same bucket
 	@Override
-	public List<Bucket> build(List<Item> items, Configuration config)  
+	public List<Bucket> build(List<Item> items, Configuration config, List<Item> y_ker)  
 	{
 		// usare sorting per nome
 		

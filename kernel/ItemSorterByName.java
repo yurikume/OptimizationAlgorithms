@@ -26,8 +26,7 @@ public class ItemSorterByName implements ItemSorter
 			
 			fin_item.add(y_it);
 			// Riordino anche le x in base alla goodness
-			x_list.sort(Comparator.comparing(Item::getXr).reversed()
-					.thenComparing(Item::getGoodness).reversed());
+			x_list.sort(Comparator.comparing(Item::getGoodness).reversed()); // Ho tolto l'ordinamento per value prima
 			fin_item.addAll(x_list);
 		}
 		items.clear();

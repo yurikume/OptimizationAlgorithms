@@ -5,7 +5,7 @@ import java.util.List;
 public class VariableSizeBucketBuilder implements BucketBuilder
 {
 	@Override
-	public List<Bucket> build(List<Item> items, Configuration config)
+	public List<Bucket> build(List<Item> items, Configuration config,List<Item> y_ker)
 	{
 		List<Bucket> buckets = new ArrayList<>();
 		Bucket b = new Bucket();
