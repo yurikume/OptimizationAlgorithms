@@ -119,6 +119,9 @@ public class ConfigurationReader
         					System.out.println("Unrecognized kernel builder.");
         			}
         			break;
+        		case "ITEMSLIMIT":
+        			config.setItemsLimit(Integer.parseInt(splitLine[1]));
+        			break;
         		default:
         			System.out.println("Unrecognized parameter name.");			
 			}

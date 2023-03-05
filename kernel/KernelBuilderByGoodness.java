@@ -12,7 +12,7 @@ public class KernelBuilderByGoodness implements KernelBuilder {
 		int size = (int) Math.floor(items.size()*config.getKernelSize());
 //		List<Item> y_items=items.stream().filter(p -> p.getName().startsWith("y")).collect(Collectors.toList());
 //		List<Item> x_items=items.stream().filter(p -> p.getName().startsWith("x")).collect(Collectors.toList());
-		int limit_items = 15; // Il numero di items da prendere per ogni famiglia (sarà variabile)
+		int items_limit = config.getItemsLimit(); // Il numero di items da prendere per ogni famiglia (sarà variabile)
 
 		for(Item it : items) {
 			if(it.getName().startsWith("y")) {
@@ -24,7 +24,7 @@ public class KernelBuilderByGoodness implements KernelBuilder {
 	            
 	            List<Item> x_list = new ArrayList<Item>();
 				x_list = items.stream().filter(p -> p.getName().startsWith("x_"+fam) && p.getName().endsWith("_"+knap)).collect(Collectors.toList());
-				for(int i = 0; i < limit_items; i++) {
+				for(int i = 0; i < items_limit; i++) {
 					kernel.addItem(x_list.get(i));
 				}
 			}

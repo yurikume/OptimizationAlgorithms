@@ -13,6 +13,7 @@ public class Configuration
 	private int timeLimitKernel;
 	private int numIterations;
 	private int timeLimitBucket;
+	private int itemsLimit;
 
 	public BucketBuilder getBucketBuilder()
 	{
@@ -133,4 +134,14 @@ public class Configuration
 	{
 		this.timeLimitKernel = timeLimitKernel;
 	}
+
+	public int getItemsLimit() {
+		return itemsLimit;
+	}
+
+	public void setItemsLimit(int itemsLimit) {
+		this.itemsLimit = itemsLimit;
+	}
+	
+	
 }
