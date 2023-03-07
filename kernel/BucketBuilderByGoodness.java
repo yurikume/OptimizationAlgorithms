@@ -14,13 +14,13 @@ public class BucketBuilderByGoodness implements BucketBuilder {
 		HashMap<Item,List<Item>> mappa = new HashMap<Item,List<Item>>();
 		int size = (int) Math.floor(items.size()*config.getBucketSize());
 		List<Item> y_items=items.stream().filter(p -> p.getName().startsWith("y")).collect(Collectors.toList());
-		List<Item> x_items=items.stream().filter(p -> p.getName().startsWith("x")).collect(Collectors.toList());
+//		List<Item> x_items=items.stream().filter(p -> p.getName().startsWith("x")).collect(Collectors.toList());
 		int items_limit = config.getItemsLimit(); // Il numero di items da prendere per ogni famiglia (sarà variabile)
 		int index;
 		List<Item> x_list;
 		Item x_item;
 		int count = 0;
-		int x_it_size = x_items.size();
+		int x_it_size = items.size() - y_items.size();
 		Boolean first_iter = true;
 		
 		// Riempio la hashmap 
@@ -33,8 +33,7 @@ public class BucketBuilderByGoodness implements BucketBuilder {
 			mappa.put(it, x_list);
 		}
 		
-		// Ciclo su tutte le chiavi(le y) della hashmap e per ognuna prendo 10 x e le rimuovo
-		// Finisco quando x_items è vuoto, cioè quando ho messo tutte le x in tutti i bucket
+		// Ciclo su tutte le chiavi(le y) della hashmap e per ognuna prendo items_limit x e le rimuovo
 		while(count < x_it_size) {
 			for(Item it : mappa.keySet()) {
 				if(first_iter && y_ker.contains(it)) {

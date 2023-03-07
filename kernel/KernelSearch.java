@@ -91,14 +91,14 @@ public class KernelSearch
 		
 		// Solo kernel by goodness
 		kernel = kernelBuilder.build(items, config);
-		List<Item> sel_items = items.stream().filter(it -> !kernel.contains(it)).collect(Collectors.toList());
+		List<Item> sel_items = items.stream().filter(it -> it.getName().startsWith("y") || !kernel.contains(it)).collect(Collectors.toList());
 		List<Item> y_ker = items.stream().filter(it -> kernel.contains(it) && it.getName().startsWith("y")).collect(Collectors.toList());
-		for(Item it : kernel.getItems()) {
-			if(it.getName().startsWith("y")) {
-				sel_items.add(it);
-			}
-		}
-		sorter.sort(sel_items);
+//		for(Item it : kernel.getItems()) {
+//			if(it.getName().startsWith("y")) {
+//				sel_items.add(it);
+//			}
+//		}
+//		sorter.sort(sel_items);
 		buckets = bucketBuilder.build(sel_items, config, y_ker);
 		solveKernel();
 		iterateBuckets();
