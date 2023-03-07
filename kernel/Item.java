@@ -10,6 +10,7 @@ public class Item
 	private int profit;
 	private int weight;
 	private double goodness; // Cambiare per le famiglie
+	private boolean in_kernel;
 	
 	public Item(String name, double xr, double rc, int profit, int weight)
 	{
@@ -19,6 +20,7 @@ public class Item
 		this.profit = profit;
 		this.weight = weight;
 		this.goodness = (profit-weight)*100.0/weight;
+		this.in_kernel = false;
 	}
 	
 	public String getName()
@@ -68,6 +70,14 @@ public class Item
 			return false;
 		Item other = (Item) obj;
 		return Objects.equals(name, other.name);
+	}
+	
+	public boolean is_in_kernel() {
+		return this.in_kernel;
+	}
+	
+	public void set_in_kernel(boolean in_kernel) {
+		this.in_kernel = in_kernel;
 	}
 	
 }

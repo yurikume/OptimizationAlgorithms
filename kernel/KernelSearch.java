@@ -244,8 +244,46 @@ public class KernelSearch
 			{
 				bestSolution = model.getSolution();
 				List<Item> selected = model.getSelectedItems(b.getItems());
-				selected.forEach(it -> kernel.addItem(it));
-				selected.forEach(it -> b.removeItem(it));
+				
+				for(Item it: selected){
+					kernel.addItem(it);
+					b.removeItem(it);
+					it.set_in_kernel(true);
+				}
+				
+				// selected.forEach(it -> kernel.addItem(it));
+				// selected.forEach(it -> b.removeItem(it));
+				
+				
+				// selected.forEach(it -> it.set_in_kernel(true));
+				List<Item> non_selected = items.stream().filter(it -> !selected.contains(it)).collect(Collectors.toList());
+				non_selected.forEach(it -> it.set_in_kernel(false));
+				
+				
+				int num_items_da_reinserire = 3;
+				int cont = 0;
+				List<Item> x_items_non_selected = new ArrayList<Item>();
+				
+				List<Item> y_items_non_selected = non_selected.stream().filter(it -> it.getName().startsWith("y")).collect(Collectors.toList());
+				for(Item y_item: y_items_non_selected) {
+					kernel.addItem(y_item);
+					y_item.set_in_kernel(true);
+					
+					String vars[]= y_item.getName().split("_");
+		            String fam = vars[1];
+		            String knap = vars[2];
+					
+					x_items_non_selected = non_selected.stream().filter(p -> p.getName().startsWith("x_"+fam) && p.getName().endsWith("_"+knap)).collect(Collectors.toList());
+					
+					for(Item x_item: x_items_non_selected) {
+						kernel.addItem(x_item);
+						x_item.set_in_kernel(true);
+						
+						cont++;
+						if(cont >= num_items_da_reinserire) break;
+					}
+				}
+				
 				
 				// INIZIO MODIFICA
 				// Promising items chosen through the goodness measure
