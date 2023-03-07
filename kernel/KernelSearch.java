@@ -61,6 +61,7 @@ public class KernelSearch
 		sorter.sort(items);	
 		
 		// Stampa degli items con i loro dati in un file esterno
+		// Commento
 		try {
 	        PrintWriter out = new PrintWriter("items_list.txt");
 	        out.println("****** Items dopo il sorting:");
