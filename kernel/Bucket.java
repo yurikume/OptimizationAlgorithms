@@ -49,4 +49,8 @@ public class Bucket
 			this.items.add(it);
 		}
 	}
+	
+	public void sortItems(ItemSorter sorter) {
+		sorter.sort(this.items);
+	}
 }
