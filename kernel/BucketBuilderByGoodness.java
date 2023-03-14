@@ -2,6 +2,7 @@ package kernel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,7 +12,7 @@ public class BucketBuilderByGoodness implements BucketBuilder {
 	public List<Bucket> build(List<Item> items, Configuration config,List<Item> y_ker) {
 		List<Bucket> buckets = new ArrayList<>();
 		Bucket b = new Bucket();
-		HashMap<Item,List<Item>> mappa = new HashMap<Item,List<Item>>();
+		LinkedHashMap<Item,List<Item>> mappa = new LinkedHashMap<Item,List<Item>>();
 		int size = (int) Math.floor(items.size()*config.getBucketSize());
 		List<Item> y_items=items.stream().filter(p -> p.getName().startsWith("y")).collect(Collectors.toList());
 //		List<Item> x_items=items.stream().filter(p -> p.getName().startsWith("x")).collect(Collectors.toList());

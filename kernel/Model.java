@@ -32,6 +32,7 @@ public class Model
 	private int aij[][];
 	private int fit[][];
 	private int di[];
+	private int bt[];
 	private final int maxT = 20;
 	private final int maxN = 30;
 	private final int maxNItems = 60;
@@ -42,6 +43,7 @@ public class Model
 		this.aij = new int[maxN][maxNItems]; // Controlla dimensioni
 		this.fit = new int[maxN][maxT];
 		this.di = new int[maxN];
+		this.bt = new int[maxT];
 		this.mpsFilePath = mpsFilePath;
 		this.logPath = logPath;
 		this.timeLimit = timeLimit;	
@@ -100,6 +102,7 @@ public class Model
 		    for(int i=0; i < T;i++) {
 		    	bt[i]=Integer.parseInt(num[i]);
 		    }
+		    this.bt = bt;
 		     
 		    line=reader.readLine();
 		    num=line.split(" ");
@@ -473,5 +476,9 @@ public class Model
 	
 	public int getFamilyWeight(int i) {
 		return this.di[i];
+	}
+	
+	public int getKnapsackCapacity(int t) {
+		return this.bt[t];
 	}
 }

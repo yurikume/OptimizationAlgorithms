@@ -32,5 +32,4 @@ public class ItemSorterByName implements ItemSorter
 		items.clear();
 		items.addAll(fin_item);
 	}
-
 }

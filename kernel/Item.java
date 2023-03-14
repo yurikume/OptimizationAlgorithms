@@ -12,14 +12,14 @@ public class Item
 	private double goodness; // Cambiare per le famiglie
 	private boolean in_kernel;
 	
-	public Item(String name, double xr, double rc, int profit, int weight)
+	public Item(String name, double xr, double rc, int profit, int weight, double goodness)
 	{
 		this.name = name;
 		this.xr = xr;
 		this.rc = rc;
 		this.profit = profit;
 		this.weight = weight;
-		this.goodness = (profit-weight)*100.0/weight;
+		this.goodness = goodness;
 		this.in_kernel = false;
 	}
 	
@@ -53,6 +53,10 @@ public class Item
 
 	public double getGoodness() {
 		return goodness;
+	}
+	
+	public void setGoodness(double goodness) {
+		this.goodness = goodness;
 	}
 	
 	@Override
