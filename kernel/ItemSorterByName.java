@@ -9,9 +9,10 @@ public class ItemSorterByName implements ItemSorter
 	@Override
 	public void sort(List<Item> items)
 	{
-		items.sort(Comparator.comparing(Item::getXr)
-				.thenComparing(Item::getRc).reversed()); 
+		items.sort(Comparator.comparing(Item::getXr).thenComparing(Item::getRc).reversed()); 
 		// Ordinati così vanno bene: a parità di value i costi ridotti sono in ordine decrescente
+//		items.sort(Comparator.comparing(Item::getXr).thenComparing(Item::getGoodness).reversed()); // Primi per value, altri per goodness
+//		items.sort(Comparator.comparing(Item::getGoodness).reversed()); 
 		
 		List<Item> y_items=items.stream().filter(p -> p.getName().startsWith("y")).collect(Collectors.toList());
 		List<Item> fin_item = new ArrayList<Item>();

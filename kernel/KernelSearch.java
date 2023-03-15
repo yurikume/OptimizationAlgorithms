@@ -144,7 +144,8 @@ public class KernelSearch
 		}
 		// Ora che ho tutti gli items x inizializzati, posso calcolare la goodness delle y
 		List<Item> y_items = items.stream().filter(it -> it.getName().startsWith("y")).collect(Collectors.toList());
-		int fam_setup_cost,fam_weight,knap_cap,weight_measure,profit_measure, y_goodness;
+		int fam_setup_cost,fam_weight,knap_cap,weight_measure,profit_measure;
+		double weight_percentage, y_goodness, res_knap_cap;
 		
 		for(Item y_it : y_items) {
 			int fam,knap;
@@ -161,15 +162,20 @@ public class KernelSearch
 				items_weight += x_it.getWeight();
 				items_profit += x_it.getProfit();
 			}
-			weight_measure = (items_weight + fam_weight) - knap_cap; // Da minimizzare
+			
+			res_knap_cap = knap_cap - fam_weight; // Capacità residua del knapsack per inserire gli item
+			weight_percentage = res_knap_cap/items_weight; // Percentuale di item che ci stanno nel knapsack
+			if(weight_percentage >= 1.0)
+				weight_percentage = 1.0;
+			
+//			weight_measure = (items_weight + fam_weight) - knap_cap; // Da minimizzare
 			profit_measure = items_profit + fam_setup_cost; // Setup cost è negativo (da massimizzare)
 			// Forse è meglio usare solo la weight measure che è più significativa e indica quanti item ci starebbero
 			// nel knapsack
-			y_goodness = profit_measure / weight_measure; // Se massimizziamo questa massimizzo il profit e minimizzo il weight
+			y_goodness = profit_measure * weight_percentage; // Se massimizziamo questa massimizzo il profit e minimizzo il weight
 			// Da sistemare il modo il cui sono legate le varie parti
-			y_it.setGoodness(weight_measure);
+			y_it.setGoodness(y_goodness);
 		}
-		
 		return items;
 	}
 	
