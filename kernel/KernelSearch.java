@@ -252,55 +252,59 @@ public class KernelSearch
 			
 			System.out.println("\n****** Items su cui opera il bucket:");
 			// Aggiunta per builder by goodness (versione senza l'attributo in_kernel)
-//			if(bucketBuilder instanceof BucketBuilderByGoodness) {
-//				Bucket b_copy = new Bucket();
-//				b_copy.copy(b.getItems());
-//				List<Item> x_y_items;
-//				int limit = config.getItemsLimit();
-//				int counter;
-//				
-//				for(Item it: b_copy.getItems()) {
-//					if(it.getName().startsWith("y")) { 
-//						if(kernel.contains(it)) {
-//							// La prima volta che entro qui sarà quando inizia la seconda iterazione
-//							if(first_iter) first_iter = false;
-//							b.removeItem(it);// Se il kernel già contiene l'item non lo rimetto (per le y) 
-//							System.out.println("Item " + it.getName() + " rimosso");
-//						} 
-//						else { 
-//							// Altrimenti se non contiene la y inserisco i primi ITEMSLIMIT items e rimuovo quelli del bucket corrente
-//							// Devo controllare che non sia la prima iterazione
-//							if(!first_iter) {
-//								System.out.println("Item " + it.getName() + " non presente");
-//								String vars[]= it.getName().split("_");
-//					            String fam = vars[1];
-//					            String knap = vars[2];
-//								
-//								x_y_items = items.stream().filter(p -> p.getName().startsWith("x_"+fam) && p.getName().endsWith("_"+knap)).collect(Collectors.toList());
-//								counter = 0;
-//								for(Item x_it : x_y_items) {
-//									// Aggiungo i primi limit items al bucket e rimuovo i successivi
-//									if(counter < limit) {
-//										b.addItem(x_it);
-//									}else {
-//										b.removeItem(x_it);
-//									}
-//									counter++;
-//								}
-//							}
-//						}
-//						// Se non contiene la y, vuol dire che non avrà nemmeno le sue prime x, quindi ce le rimetto
-//						// OPPURE: a tutti metto le prime limit x che non sono ancora nel kernel, in questo modo le y che
-//						// sono già nel kernel avranno più possibilità di rimanerci in quanto essendo nel kernel dopo la prima
-//						// "iterazione" sono quelle più promettenti
-//						// Per farlo mi serve però un bucket builder dinamico 
-//					}
-//				}
-//				// In teoria il sorting non conta: una volta che le variabili sono nel bucket che siano all'inizio o
-//				// alla fine non cambia per il solver. Sono importanti all'inizio per la costruzione dei bucket e basta
-////				ItemSorter sorter2 = new ItemSorterByValueAndAbsoluteRC();
-////				b.sortItems(sorter2); // Occhio che se non ci sono le y nel bucket il sorter toglie anche tutte le rispettive x
-//			}
+			if(bucketBuilder instanceof BucketBuilderByGoodness) {
+				Bucket b_copy = new Bucket();
+				b_copy.copy(b.getItems());
+				List<Item> x_y_items;
+				int limit = config.getItemsLimit();
+				int counter;
+				
+				for(Item it: b_copy.getItems()) {
+					if(it.getName().startsWith("y")) { 
+						if(kernel.contains(it)) {
+							// La prima volta che entro qui sarà quando inizia la seconda iterazione
+							if(first_iter) {
+								first_iter = false;
+								System.out.println("********** ITEMS DEL KERNEL ****************");
+								kernel.getItems().stream().forEach(p->System.out.println(p.getName() + " :" + p.getRc() + " - value = " + p.getXr() + " - good% = " + p.getGoodness()));
+							}
+							b.removeItem(it);// Se il kernel già contiene l'item non lo rimetto (per le y) 
+							System.out.println("Item " + it.getName() + " rimosso");
+						} 
+						else { 
+							// Altrimenti se non contiene la y inserisco i primi ITEMSLIMIT items e rimuovo quelli del bucket corrente
+							// Devo controllare che non sia la prima iterazione
+							if(!first_iter) {
+								System.out.println("Item " + it.getName() + " non presente");
+								String vars[]= it.getName().split("_");
+					            String fam = vars[1];
+					            String knap = vars[2];
+								
+								x_y_items = items.stream().filter(p -> p.getName().startsWith("x_"+fam) && p.getName().endsWith("_"+knap)).collect(Collectors.toList());
+								counter = 0;
+								for(Item x_it : x_y_items) {
+									// Aggiungo i primi limit items al bucket e rimuovo i successivi
+									if(counter < limit) {
+										b.addItem(x_it);
+									}else {
+										b.removeItem(x_it);
+									}
+									counter++;
+								}
+							}
+						}
+						// Se non contiene la y, vuol dire che non avrà nemmeno le sue prime x, quindi ce le rimetto
+						// OPPURE: a tutti metto le prime limit x che non sono ancora nel kernel, in questo modo le y che
+						// sono già nel kernel avranno più possibilità di rimanerci in quanto essendo nel kernel dopo la prima
+						// "iterazione" sono quelle più promettenti
+						// Per farlo mi serve però un bucket builder dinamico 
+					}
+				}
+				// In teoria il sorting non conta: una volta che le variabili sono nel bucket che siano all'inizio o
+				// alla fine non cambia per il solver. Sono importanti all'inizio per la costruzione dei bucket e basta
+//				ItemSorter sorter2 = new ItemSorterByValueAndAbsoluteRC();
+//				b.sortItems(sorter2); // Occhio che se non ci sono le y nel bucket il sorter toglie anche tutte le rispettive x
+			}
 			System.out.println("Num items = " + b.getItems().size());
 			b.getItems().stream().forEach(it->System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - good% = " + it.getGoodness()));
 			
