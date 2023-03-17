@@ -170,10 +170,10 @@ public class KernelSearch
 			
 //			weight_measure = (items_weight + fam_weight) - knap_cap; // Da minimizzare
 			profit_measure = items_profit + fam_setup_cost; // Setup cost è negativo (da massimizzare)
-			// Forse è meglio usare solo la weight measure che è più significativa e indica quanti item ci starebbero
-			// nel knapsack
-			y_goodness = profit_measure * weight_percentage; // Se massimizziamo questa massimizzo il profit e minimizzo il weight
-			// Da sistemare il modo il cui sono legate le varie parti
+			
+			y_goodness = profit_measure * weight_percentage; 
+			// Prendo il profit che otterrei mettendo tutti gli items nel knapsack e lo moltiplico per la percentuale
+			// di items che può essere in esso inserita ottenuta dalla stima precedente
 			y_it.setGoodness(y_goodness);
 		}
 		return items;
