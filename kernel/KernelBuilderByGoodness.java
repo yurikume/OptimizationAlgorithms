@@ -9,11 +9,16 @@ public class KernelBuilderByGoodness implements KernelBuilder {
 	@Override
 	public Kernel build(List<Item> items, Configuration config) {
 		Kernel kernel = new Kernel();
-		int size = (int) Math.floor(items.size()*config.getKernelSize());
 		List<Item> y_items=items.stream().filter(p -> p.getName().startsWith("y")).collect(Collectors.toList());
 //		List<Item> x_items=items.stream().filter(p -> p.getName().startsWith("x")).collect(Collectors.toList());
 		int items_limit = config.getItemsLimit(); // Il numero di items da prendere per ogni famiglia (sarà variabile)
-
+		int size;
+		if(config.getBucketBuilder() instanceof BucketBuilderByFirstItems) {
+			size = (int) Math.floor(y_items.size() * items_limit * config.getKernelSize());
+		}else {
+			size = (int) Math.floor(items.size()*config.getKernelSize());
+		}
+		
 		for(Item it : y_items) {
 			kernel.addItem(it);
 			

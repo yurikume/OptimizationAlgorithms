@@ -239,12 +239,51 @@ public class KernelSearch
 	
 	private void solveBuckets()
 	{
-		int count = 0;
 //		List<Item> x_items = items.stream().filter(it -> it.getName().startsWith("x")).collect(Collectors.toList());
+		
+		if(config.getBucketBuilder() instanceof BucketBuilderByFirstItems) {
+			extracted();
+			// Dopo aver fatto la prima iterazione seleziono le y che ci sono nel kernel con tutte le loro x e uso queste
+			// come sottoinsieme di items
+			System.out.println("****** FINE ITERAZIONE 1 ********");
+			kernel.getItems().stream().forEach(it->System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - good% = " + it.getGoodness()));
+			
+			List<Item> y_ker = items.stream().filter(it -> kernel.contains(it) && it.getName().startsWith("y")).collect(Collectors.toList());
+			List<Item> newItems = new ArrayList<Item>();
+			for(Item y_it : y_ker) {
+				String vars[]= y_it.getName().split("_");
+	            String fam = vars[1];
+	            String knap = vars[2];
+	            
+	            newItems.addAll(items.stream().filter(p -> p.getName().startsWith("x_"+fam) && p.getName().endsWith("_"+knap)).collect(Collectors.toList()));
+			}
+			newItems.addAll(y_ker); // Lista degli item da usare nella seconda iterazione
+			// Da qui devo rifare la kernel search sui nuovi items
+			sorter.sort(newItems);
+			kernel = kernelBuilder.build(newItems, config);
+			List<Item> sel_items = items.stream().filter(it -> it.getName().startsWith("y") || !kernel.contains(it)).collect(Collectors.toList());
+			y_ker = items.stream().filter(it -> kernel.contains(it) && it.getName().startsWith("y")).collect(Collectors.toList());
+			bucketBuilder = new BucketBuilderByName();
+			buckets = bucketBuilder.build(sel_items, config, y_ker);
+
+			solveKernel();
+			
+			List<Item> oldItems = new ArrayList<Item>(items);
+			items = newItems;
+			extracted();
+			items = oldItems;
+			
+		}else {
+			extracted();	
+		}
+	}
+	
+	// Metodo estratto per iterare sui bucket
+	private void extracted() {
+		int count = 0;
 		boolean first_iter = true;
 		
-		for(Bucket b : buckets)
-		{
+		for(Bucket b : buckets) {
 			System.out.println("\n\n\n\n\t\t** Solving bucket "+count++ +" **\n");
 			
 //			System.out.println("****** Items contenuti nel kernel:");
@@ -415,7 +454,7 @@ public class KernelSearch
 				
 			if(getRemainingTime() <= timeThreshold)
 				return;
-		}	
+		}
 	}
 
 	private int getRemainingTime()
