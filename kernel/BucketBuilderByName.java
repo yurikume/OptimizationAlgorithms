@@ -17,8 +17,7 @@ public class BucketBuilderByName implements BucketBuilder
 		
 		// In y_items metto le y che non sono nel kernel
 		List<Item> y_items=items.stream().filter(it -> it.getName().startsWith("y") && !y_ker.contains(it)).collect(Collectors.toList());
-//		int y_da_prendere = (int) Math.floor(y_items.size()/(items.size()/size)); 
-		int y_da_prendere = (int)Math.floor(y_items.size() * config.getBucketSize());// so it means i take a percentage of y variables to put in the bucket
+		int y_da_prendere = (int)Math.ceil(y_items.size() * config.getBucketSize());// so it means i take a percentage of y variables to put in the bucket
 		int i = 0;
 		int limit;
 		

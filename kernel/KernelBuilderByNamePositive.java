@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class KernelBuilderByName implements KernelBuilder
+public class KernelBuilderByNamePositive implements KernelBuilder
 {
 	// I put in the kernel all the y with xr > 0 and their x (since they're ordered by name)
 	// Nuova idea: mettere non tutte le x, ma solo le prime tot per inserire solo le più promettenti di ogni famiglia

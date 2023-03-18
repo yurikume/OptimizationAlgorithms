@@ -113,9 +113,12 @@ public class ConfigurationReader
         					config.setKernelBuilder(new KernelBuilderPercentage());
         					break;
         				case 2:
-        					config.setKernelBuilder(new KernelBuilderByName());
+        					config.setKernelBuilder(new KernelBuilderByNamePositive());
         					break;
         				case 3:
+        					config.setKernelBuilder(new KernelBuilderByNamePercentage());
+        					break;
+        				case 4:
         					config.setKernelBuilder(new KernelBuilderByGoodness());
         					break;
         				default:

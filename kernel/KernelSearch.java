@@ -191,7 +191,9 @@ public class KernelSearch
 			model.readSolution(bestSolution);
 		}
 		
+		System.out.println("Dimensione items: "+items.size());
 		List<Item> toDisable = items.stream().filter(it -> !kernel.contains(it)).collect(Collectors.toList());
+		toDisable.stream().forEach(it->System.out.println(it.getName()));
 		model.disableItems(toDisable);
 		model.setCallback(callback);
 		
@@ -246,6 +248,9 @@ public class KernelSearch
 			// Dopo aver fatto la prima iterazione seleziono le y che ci sono nel kernel con tutte le loro x e uso queste
 			// come sottoinsieme di items
 			System.out.println("****** FINE ITERAZIONE 1 ********");
+			System.out.println("Tempo iterazione 1: " + Duration.between(startTime, Instant.now()).getSeconds());
+			config.setBucketBuilder(new BucketBuilderByName());
+			config.setKernelBuilder(new KernelBuilderByNamePercentage());
 			kernel.getItems().stream().forEach(it->System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - good% = " + it.getGoodness()));
 			
 			List<Item> y_ker = items.stream().filter(it -> kernel.contains(it) && it.getName().startsWith("y")).collect(Collectors.toList());
@@ -260,18 +265,22 @@ public class KernelSearch
 			newItems.addAll(y_ker); // Lista degli item da usare nella seconda iterazione
 			// Da qui devo rifare la kernel search sui nuovi items
 			sorter.sort(newItems);
-			kernel = kernelBuilder.build(newItems, config);
-			List<Item> sel_items = items.stream().filter(it -> it.getName().startsWith("y") || !kernel.contains(it)).collect(Collectors.toList());
-			y_ker = items.stream().filter(it -> kernel.contains(it) && it.getName().startsWith("y")).collect(Collectors.toList());
-			bucketBuilder = new BucketBuilderByName();
-			buckets = bucketBuilder.build(sel_items, config, y_ker);
-
-			solveKernel();
 			
-			List<Item> oldItems = new ArrayList<Item>(items);
-			items = newItems;
+			System.out.println("NUOVI ITEMS");
+			newItems.stream().forEach(it->System.out.println(it.getName()));
+			
+//			List<Item> oldItems = new ArrayList<Item>(items);
+		
+			kernelBuilder = config.getKernelBuilder(); // Il kernel builder by name prende tutte le famiglie con value positivo
+			kernel = kernelBuilder.build(newItems, config);
+			List<Item> sel_items = newItems.stream().filter(it -> it.getName().startsWith("y") || !kernel.contains(it)).collect(Collectors.toList());
+			y_ker = newItems.stream().filter(it -> kernel.contains(it) && it.getName().startsWith("y")).collect(Collectors.toList());
+			bucketBuilder = config.getBucketBuilder();
+			buckets = bucketBuilder.build(sel_items, config, y_ker);
+			
+			solveKernel();
 			extracted();
-			items = oldItems;
+//			items = oldItems;
 			
 		}else {
 			extracted();	
