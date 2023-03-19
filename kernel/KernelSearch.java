@@ -193,16 +193,15 @@ public class KernelSearch
 		
 		System.out.println("Dimensione items: "+items.size());
 		List<Item> toDisable = items.stream().filter(it -> !kernel.contains(it)).collect(Collectors.toList());
-		toDisable.stream().forEach(it->System.out.println(it.getName()));
+		// Stampa item disabilitati
+		// toDisable.stream().forEach(it->System.out.println(it.getName()));
 		model.disableItems(toDisable);
 		model.setCallback(callback);
 		
-		System.out.println("****** Items su cui opera il kernel :");
-		System.out.println("Num items = " + kernel.getItems().size());
-		
-		for(Item it: kernel.getItems()) {
-			System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - good% = " + it.getGoodness());
-		}
+		// Stampa items del kernel
+//		System.out.println("****** Items su cui opera il kernel :");
+//		System.out.println("Num items = " + kernel.getItems().size());
+//		kernel.getItems().stream().forEach(it->System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - good% = " + it.getGoodness()));
 		
 		model.solve();
 		// Aggiunta
@@ -226,34 +225,22 @@ public class KernelSearch
 	
 	private void iterateBuckets()
 	{
-		for (int i = 0; i < numIterations; i++)
-		{
-			if(getRemainingTime() <= timeThreshold)
-				return;
-			if(i != 0)
-				objValues.add(new ArrayList<>());
-			
-			System.out.println("\n\n\n\t\t******** Iteration "+i+" ********\n\n\n");
-			solveBuckets();			
-		}
-		System.out.println("Tempo totale:" + Duration.between(startTime, Instant.now()).getSeconds());
-	}
-	
-	private void solveBuckets()
-	{
-//		List<Item> x_items = items.stream().filter(it -> it.getName().startsWith("x")).collect(Collectors.toList());
-		
+		// Se ho la configurazione BucketBuilder 6 (e Kernel Builder 4), che è quella del nuovo algoritmo, eseguo 
+		// due volte solve buckets in modi differenti
+		// In questo caso il parametro Numiterations non influenza, ma serve Itemslimit
 		if(config.getBucketBuilder() instanceof BucketBuilderByFirstItems) {
-			bucketIteration();
+			solveBuckets(); // Eseguo la prima iterazione con i primi items_limit items di ogni famiglia
 			// Dopo aver fatto la prima iterazione seleziono le y che ci sono nel kernel con tutte le loro x e uso queste
-			// come sottoinsieme di items
-			System.out.println("****** FINE ITERAZIONE 1 ********");
+			// come sottoinsieme di items per fare la seconda iterazione
+			System.out.println("\n\n****** INIZIO ITERAZIONE 2 ********");
 			System.out.println("Tempo iterazione 1: " + Duration.between(startTime, Instant.now()).getSeconds());
 			config.setBucketBuilder(new BucketBuilderByName());
 			config.setKernelBuilder(new KernelBuilderByNamePercentage());
-			kernel.getItems().stream().forEach(it->System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - good% = " + it.getGoodness()));
+			// Stampa items del kernel
+			//kernel.getItems().stream().forEach(it->System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - good% = " + it.getGoodness()));
 			
 			List<Item> y_ker = items.stream().filter(it -> kernel.contains(it) && it.getName().startsWith("y")).collect(Collectors.toList());
+			System.out.println("Num famiglie selezionate dalla prima iterazione: "+y_ker.size());
 			List<Item> newItems = new ArrayList<Item>();
 			for(Item y_it : y_ker) {
 				String vars[]= y_it.getName().split("_");
@@ -266,11 +253,10 @@ public class KernelSearch
 			// Da qui devo rifare la kernel search sui nuovi items
 			sorter.sort(newItems);
 			
-			System.out.println("NUOVI ITEMS");
-			newItems.stream().forEach(it->System.out.println(it.getName()));
-			
-//			List<Item> oldItems = new ArrayList<Item>(items);
-		
+			// Stampa nuovi items
+//			System.out.println("NUOVI ITEMS");
+//			newItems.stream().forEach(it->System.out.println(it.getName()));
+						
 			kernelBuilder = config.getKernelBuilder(); // Il kernel builder by name prende tutte le famiglie con value positivo
 			kernel = kernelBuilder.build(newItems, config);
 			List<Item> sel_items = newItems.stream().filter(it -> it.getName().startsWith("y") || !kernel.contains(it)).collect(Collectors.toList());
@@ -279,16 +265,25 @@ public class KernelSearch
 			buckets = bucketBuilder.build(sel_items, config, y_ker);
 			
 			solveKernel();
-			bucketIteration();
-//			items = oldItems;
-			
+			solveBuckets(); // Nella seconda iterazione considero solo un sottoinsieme degli items 
 		}else {
-			bucketIteration();	
+			// In tutti gli altri casi eseguo un certo numero di iterazioni della kernel search
+			for (int i = 0; i < numIterations; i++)
+			{
+				if(getRemainingTime() <= timeThreshold)
+					return;
+				if(i != 0)
+					objValues.add(new ArrayList<>());
+				
+				System.out.println("\n\n\n\t\t******** Iteration "+i+" ********\n\n\n");
+				solveBuckets();			
+			}
 		}
+		System.out.println("Tempo totale:" + Duration.between(startTime, Instant.now()).getSeconds());
 	}
 	
-	// Metodo estratto per iterare sui bucket
-	private void bucketIteration() {
+	private void solveBuckets()
+	{
 		int count = 0;
 		boolean first_iter = true;
 		
@@ -298,8 +293,8 @@ public class KernelSearch
 //			System.out.println("****** Items contenuti nel kernel:");
 //			kernel.getItems().stream().forEach(it->System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - good% = " + it.getGoodness()));
 			
-			System.out.println("\n****** Items su cui opera il bucket:");
 			// Aggiunta per builder by goodness (versione senza l'attributo in_kernel)
+			// Sarà tutto da togliere
 			if(bucketBuilder instanceof BucketBuilderByGoodness) {
 				Bucket b_copy = new Bucket();
 				b_copy.copy(b.getItems());
@@ -353,8 +348,10 @@ public class KernelSearch
 //				ItemSorter sorter2 = new ItemSorterByValueAndAbsoluteRC();
 //				b.sortItems(sorter2); // Occhio che se non ci sono le y nel bucket il sorter toglie anche tutte le rispettive x
 			}
-			System.out.println("Num items = " + b.getItems().size());
-			b.getItems().stream().forEach(it->System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - good% = " + it.getGoodness()));
+			// Stampa items del bucket
+//			System.out.println("\n****** Items su cui opera il bucket:");
+//			System.out.println("Num items = " + b.getItems().size());
+//			b.getItems().stream().forEach(it->System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - good% = " + it.getGoodness()));
 			
 			System.out.println("****** Items contenuti nel kernel");
 			System.out.println("Num items = " + kernel.getItems().size());
@@ -446,11 +443,11 @@ public class KernelSearch
 //				for(Item it: b.getItems()) {
 //					System.out.println(it.getName() + " - value = " + model.getVarValue(it.getName()));
 //				}
-				System.out.println("****** Items selezionati dal bucket " + count + " :");
-				System.out.println("Num items = " + selected.size());
-				for(Item it: selected) {
-					System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - good% = " + it.getGoodness());
-				}
+				
+				// Stampa items selezionati dal bucket
+//				System.out.println("****** Items selezionati dal bucket " + count + " :");
+//				System.out.println("Num items = " + selected.size());
+//				selected.stream().forEach(it->System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - good% = " + it.getGoodness()));
 				
 				// FINE MODIFICA
 				
@@ -463,7 +460,7 @@ public class KernelSearch
 				
 			if(getRemainingTime() <= timeThreshold)
 				return;
-		}
+		}		
 	}
 
 	private int getRemainingTime()
