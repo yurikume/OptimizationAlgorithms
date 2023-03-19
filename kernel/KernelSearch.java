@@ -244,7 +244,7 @@ public class KernelSearch
 //		List<Item> x_items = items.stream().filter(it -> it.getName().startsWith("x")).collect(Collectors.toList());
 		
 		if(config.getBucketBuilder() instanceof BucketBuilderByFirstItems) {
-			extracted();
+			bucketIteration();
 			// Dopo aver fatto la prima iterazione seleziono le y che ci sono nel kernel con tutte le loro x e uso queste
 			// come sottoinsieme di items
 			System.out.println("****** FINE ITERAZIONE 1 ********");
@@ -279,16 +279,16 @@ public class KernelSearch
 			buckets = bucketBuilder.build(sel_items, config, y_ker);
 			
 			solveKernel();
-			extracted();
+			bucketIteration();
 //			items = oldItems;
 			
 		}else {
-			extracted();	
+			bucketIteration();	
 		}
 	}
 	
 	// Metodo estratto per iterare sui bucket
-	private void extracted() {
+	private void bucketIteration() {
 		int count = 0;
 		boolean first_iter = true;
 		
