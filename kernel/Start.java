@@ -15,7 +15,7 @@ public class Start{
 //		instance.add("5_10_2");
 //		instance.add("5_10_5");
 //		instance.add("5_20_1");
-		instance.add("5_20_2");
+//		instance.add("5_20_2");
 //		instance.add("5_20_5");
 //		instance.add("5_30_1");
 		instance.add("5_30_6");
@@ -32,7 +32,7 @@ public class Start{
 		instance.add("15_10_1");
 //		instance.add("15_10_3");
 //		instance.add("15_10_7");
-		instance.add("15_20_1");
+//		instance.add("15_20_1");
 //		instance.add("15_20_5");
 //		instance.add("15_20_9");
 //		instance.add("15_30_1");
@@ -54,12 +54,13 @@ public class Start{
 		String pathConfig = "config.txt";
 		
 		try {
-	        PrintWriter out = new PrintWriter("config_3.txt");
-	        out.println("Riassunto configurazione: ");
-	        
+	        PrintWriter out = new PrintWriter("results_prova.txt");
+	        Configuration config = ConfigurationReader.read(pathConfig);
+	        out.println(String.format("Riassunto configurazione(KS: %.3f - BS: %.3f - ITLIMS: %d - TLKER: %d - TLBUCK: %d)", config.getKernelSize(),config.getBucketSize(),config.getItemsLimit(),config.getTimeLimitKernel(),config.getTimeLimitBucket()));
+					
 	        for (int i = 0; i < instance.size(); i++){
 				pathmps = "./MK/INS_" + instance.get(i) + "v.dat";
-				Configuration config = ConfigurationReader.read(pathConfig);		
+				config = ConfigurationReader.read(pathConfig);
 				KernelSearch ks = new KernelSearch(pathmps, pathlog, config);
 				ks.start();
 				//List<List<Double>> objValues = ks.getObjValues();
