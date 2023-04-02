@@ -22,7 +22,7 @@ public class CustomCallback extends GRBCallback
 		bestObj = GRB.INFINITY;
 		try
 		{
-			this.log = new PrintStream(new BufferedOutputStream(new FileOutputStream(this.path + "\\" + "log_best_solutions.txt")), true);
+			this.log = new PrintStream(new BufferedOutputStream(new FileOutputStream(this.path + "/" + "log_best_solutions.txt")), true);
 		} catch (FileNotFoundException e)
 		{
 			e.printStackTrace();

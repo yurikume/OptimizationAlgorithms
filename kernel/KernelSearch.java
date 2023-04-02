@@ -29,6 +29,8 @@ public class KernelSearch
 	private GRBCallback callback;
 	private int timeThreshold = 5;
 	private List<List<Double>> objValues;
+	private long tot_time;
+	private Double current_best;
 	
 	private Instant startTime;
 	
@@ -279,9 +281,20 @@ public class KernelSearch
 				solveBuckets();			
 			}
 		}
-		System.out.println("Tempo totale:" + Duration.between(startTime, Instant.now()).getSeconds());
+		current_best = bestSolution.getObj();
+		tot_time = Duration.between(startTime, Instant.now()).getSeconds();
+		System.out.println("Tempo totale:" + tot_time);
+		
 	}
 	
+	public long getTot_time() {
+		return tot_time;
+	}
+
+	public Double getCurrent_best() {
+		return current_best;
+	}
+
 	private void solveBuckets()
 	{
 		int count = 0;
