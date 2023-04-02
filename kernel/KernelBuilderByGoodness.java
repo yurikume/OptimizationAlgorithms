@@ -13,7 +13,7 @@ public class KernelBuilderByGoodness implements KernelBuilder {
 //		List<Item> x_items=items.stream().filter(p -> p.getName().startsWith("x")).collect(Collectors.toList());
 		int items_limit = config.getItemsLimit(); // Il numero di items da prendere per ogni famiglia (sarà variabile)
 		int size;
-		if(config.getBucketBuilder() instanceof BucketBuilderByFirstItems) {
+		if(config.getBucketBuilder() instanceof BucketBuilderByGoodness) {
 			size = (int) Math.floor(y_items.size() * items_limit * config.getKernelSize());
 		}else {
 			size = (int) Math.floor(items.size()*config.getKernelSize());
