@@ -11,16 +11,16 @@ public class Start{
 	public static void main(String[] args){
 		ArrayList<String> instance = new ArrayList<>();
 		
-		instance.add("5_10_1");
+//		instance.add("5_10_1");
 //		instance.add("5_10_2");
 //		instance.add("5_10_5");
 //		instance.add("5_20_1");
 //		instance.add("5_20_2");
 //		instance.add("5_20_5");
 //		instance.add("5_30_1");
-		instance.add("5_30_6");
+//		instance.add("5_30_6");
 //		instance.add("5_30_7");
-		instance.add("10_10_2");
+//		instance.add("10_10_2");
 //		instance.add("10_10_3");
 //		instance.add("10_10_7");
 //		instance.add("10_20_3");
@@ -29,7 +29,7 @@ public class Start{
 //		instance.add("10_30_1");
 //		instance.add("10_30_2");
 //		instance.add("10_30_5");
-		instance.add("15_10_1");
+//		instance.add("15_10_1");
 //		instance.add("15_10_3");
 //		instance.add("15_10_7");
 //		instance.add("15_20_1");
@@ -38,14 +38,14 @@ public class Start{
 //		instance.add("15_30_1");
 //		instance.add("15_30_4");
 //		instance.add("15_30_10");
-		instance.add("20_10_1");
+//		instance.add("20_10_1");
 //		instance.add("20_10_3");
 //		instance.add("20_10_7");
 //		instance.add("20_20_3");
 //		instance.add("20_20_6");
 //		instance.add("20_20_9");
 //		instance.add("20_30_1");
-//		instance.add("20_30_4");
+		instance.add("20_30_4");
 //		instance.add("20_30_10");
 		
 		
