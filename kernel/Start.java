@@ -11,7 +11,7 @@ public class Start{
 	public static void main(String[] args){
 		ArrayList<String> instance = new ArrayList<>();
 		
-//		instance.add("5_10_1");
+		instance.add("5_10_1");
 //		instance.add("5_10_2");
 //		instance.add("5_10_5");
 //		instance.add("5_20_1");
@@ -45,16 +45,17 @@ public class Start{
 //		instance.add("20_20_6");
 //		instance.add("20_20_9");
 //		instance.add("20_30_1");
-		instance.add("20_30_4");
+//		instance.add("20_30_4");
 //		instance.add("20_30_10");
 		
-		
+		int conf = 4;
+		String[] istanza;
 		String pathmps;
 		String pathlog = ".";
-		String pathConfig = "config.txt";
+		String pathConfig = "config" + conf + ".txt";
 		
 		try {
-	        PrintWriter out = new PrintWriter("results_prova.txt");
+	        PrintWriter out = new PrintWriter("results_prova_" + conf + ".txt");
 	        Configuration config = ConfigurationReader.read(pathConfig);
 	        out.println(String.format("Riassunto configurazione(KS: %.3f - BS: %.3f - ITLIMS: %d - TLKER: %d - TLBUCK: %d)", config.getKernelSize(),config.getBucketSize(),config.getItemsLimit(),config.getTimeLimitKernel(),config.getTimeLimitBucket()));
 					
@@ -64,7 +65,8 @@ public class Start{
 				KernelSearch ks = new KernelSearch(pathmps, pathlog, config);
 				ks.start();
 				//List<List<Double>> objValues = ks.getObjValues();
-				out.println(instance.get(i) + "\t\t" + ks.getCurrent_best() + "\t" + ks.getTot_time());
+				istanza = instance.get(i).split("_");
+				out.println(istanza[0] + " & " + istanza[1] + " & " + istanza[2] + " & " + ks.getCurrent_best() + " & " + ks.getTot_time() + " \\\\");
 			}
 
 	        out.close();  
