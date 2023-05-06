@@ -40,7 +40,7 @@ public class Model
 	public Model(String mpsFilePath, String logPath, int timeLimit, Configuration config, boolean lpRelaxation)
 	{
 		this.c = new int[maxN][maxNItems][maxT];
-		this.aij = new int[maxN][maxNItems]; // Controlla dimensioni
+		this.aij = new int[maxN][maxNItems];
 		this.fit = new int[maxN][maxT];
 		this.di = new int[maxN];
 		this.bt = new int[maxT];
@@ -108,13 +108,11 @@ public class Model
 		    num=line.split(" ");
 		     
 		    int c[][][] = new int[N][maxNItems][T];
-		    //int c[][][] = new int[maxNItems][N][T];
 		    for(int t = 0; t < T; t++) {
 		    	nTot=0;
 			   	for(int i = 0; i < N; i++) {
 		    		for(int j = 0; j < ni[i]; j++) {
-		    			c[i][j][t] = Integer.parseInt(num[j+nTot+t*nTotItems]);
-		    			//c[j][i][t] = Integer.parseInt(num[j+nTot+t*nTotItems]);	
+		    			c[i][j][t] = Integer.parseInt(num[j+nTot+t*nTotItems]);	
 		    		}
 		    		nTot += ni[i];
 		    	}		
@@ -128,9 +126,7 @@ public class Model
 		     for(int t = 0; t < T; t++) {
 		    	 for(int i = 0; i < N; i++) {
 		    		 fit[i][t] = Integer.parseInt(num[i+t*N]);
-		    		 //System.out.print(fit[i][t]+"\t");
 		    	 }
-		    	 //System.out.println();
 		     }
 		     this.fit = fit;
 		     
@@ -147,13 +143,10 @@ public class Model
 		     num=line.split(" ");
 		     
 		     int aij[][]=new int[N][maxNItems];
-		     //System.out.println("Matrice Aij:");
 		     for(int i = 0; i < N; i++) {
 		    	 for(int j = 0; j < ni[i]; j++) {
 		    		 aij[i][j]=Integer.parseInt(num[j+nTot]);
-		    		// System.out.print(aij[i][j]+"\t");
 		    	 }
-		    	 //System.out.println();
 		    	 nTot = nTot + ni[i];
 		     }	
 		     this.aij = aij;
@@ -194,18 +187,14 @@ public class Model
 		    for(int t = 0; t < T; t++) {
 		    	for(int i = 0; i < N; i++) {
 		    		for(int j = 0; j < ni[i]; j++) {
-		    			//System.out.println("i="+i+" j="+j+" t="+t);
 		    			expr.addTerm(c[i][j][t], x.get(t).get(i).get(j));
-//		    			expr.addTerm(c[i][j][t], model.getVarByName("x_"+i+"_"+j+"_"+t));
 		    		}
-		    		//nTot += ni[i];
 		    	}
 			}
 		    
 		    for(int t = 0; t < T; t++) {
 		    	for(int i = 0; i < N; i++) {
 		    		expr.addTerm(fit[i][t], y.get(t).get(i));
-//		    		expr.addTerm(fit[i][t], model.getVarByName("y_"+i+"_"+t));
 		    	}
 		    }
 		    
@@ -217,7 +206,6 @@ public class Model
 		    	for(int i = 0; i < N; i++) {	
 			    	for(int j = 0; j < ni[i]; j++) {
 			    		expr.addTerm(aij[i][j], x.get(t).get(i).get(j));
-//			    		expr.addTerm(aij[i][j], model.getVarByName("x_"+i+"_"+j+"_"+t));
 			    	}
 		    	}
 		    	for(int i = 0; i < N; i++) {
@@ -233,9 +221,7 @@ public class Model
 		    		for(int j = 0; j < ni[i]; j++) {
 		    			expr = new GRBLinExpr();
 		    			expr.addTerm(1.0, x.get(t).get(i).get(j));
-//		    			expr.addTerm(1.0, model.getVarByName("x_"+i+"_"+j+"_"+t));
 		    			expr.addTerm(-1.0, y.get(t).get(i));
-//		    			expr.addTerm(-1.0, model.getVarByName("y_"+i+"_"+t));
 		    			model.addConstr(expr, GRB.LESS_EQUAL, 0.0, "2.3."+(numConstr++));
 		    		}
 		    	}
@@ -246,7 +232,6 @@ public class Model
 		    	expr = new GRBLinExpr();
 		    	for(int t = 0; t < T; t++) {
 		    		expr.addTerm(1.0, y.get(t).get(i));
-//		    		expr.addTerm(1.0, model.getVarByName("y_"+i+"_"+t));
 		    	}
 		    	model.addConstr(expr, GRB.LESS_EQUAL, 1.0, "2.4."+i);
 		    }
@@ -265,9 +250,6 @@ public class Model
 		env.set(GRB.DoubleParam.MIPGap, config.getMipGap());
 		if (timeLimit > 0)
 			env.set(GRB.DoubleParam.TimeLimit, timeLimit);
-		//env.set(GRB.IntParam.Method, 0);
-		//env.set(GRB.IntParam.Presolve, 0);
-		//env.set(IntParam.OutputFlag, 0);
 		
 	}
 	
@@ -453,7 +435,7 @@ public class Model
 	}
 	
 	public void setCallback(GRBCallback callback) 
-	{ // Aggiunto try catch
+	{ 
 		model.setCallback(callback);
 	}
 	

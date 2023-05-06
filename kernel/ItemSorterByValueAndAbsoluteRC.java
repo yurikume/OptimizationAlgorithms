@@ -9,9 +9,7 @@ public class ItemSorterByValueAndAbsoluteRC implements ItemSorter
 	{
 		items.sort(Comparator.comparing(Item::getXr).reversed()
 				.thenComparing(Item::getRc));
-		// Perchè ordinato in questo modo? Dovrebbero esserci a parità di value prima
-		// gli item con costo ridotto maggiore (o minore in modulo)
-		// Questi non sono gli absolute RC, quindi non va bene
+		
 	}
 
 }

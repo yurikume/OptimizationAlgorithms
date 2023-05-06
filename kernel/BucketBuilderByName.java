@@ -9,15 +9,14 @@ public class BucketBuilderByName implements BucketBuilder
 	@Override
 	public List<Bucket> build(List<Item> items, Configuration config, List<Item> y_ker)  
 	{
-		// usare sorting per nome
-		
 		List<Bucket> buckets = new ArrayList<>();
 		Bucket b = new Bucket();
-//		int size = (int) Math.floor(items.size()*config.getBucketSize());
 		
-		// In y_items metto le y che non sono nel kernel
+		// We insert all the y that are not in the kernel in the y_items list
 		List<Item> y_items=items.stream().filter(it -> it.getName().startsWith("y") && !y_ker.contains(it)).collect(Collectors.toList());
-		int y_da_prendere = (int)Math.ceil(y_items.size() * config.getBucketSize());// so it means i take a percentage of y variables to put in the bucket
+		
+		// We take in consideration only a percentage of the y variables to insert into the buckets
+		int y_da_prendere = (int)Math.ceil(y_items.size() * config.getBucketSize());
 		int i = 0;
 		int limit;
 		
@@ -26,7 +25,7 @@ public class BucketBuilderByName implements BucketBuilder
 			
 			List<Item> x_list = new ArrayList<Item>();
 	
-			if(y_da_prendere < y_items.size()) { // Se le y da prendere sono meno degli item rimasti ancora da aggiungere
+			if(y_da_prendere < y_items.size()) {
 				limit = y_da_prendere;
 			}else {
 				limit = y_items.size();

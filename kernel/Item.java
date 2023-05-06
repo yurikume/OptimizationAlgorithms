@@ -9,7 +9,7 @@ public class Item
 	private double xr;
 	private int profit;
 	private int weight;
-	private double goodness; // Cambiare per le famiglie
+	private double goodness;
 	private boolean in_kernel;
 	
 	public Item(String name, double xr, double rc, int profit, int weight, double goodness)

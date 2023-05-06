@@ -10,9 +10,6 @@ public class ItemSorterByName implements ItemSorter
 	public void sort(List<Item> items)
 	{
 		items.sort(Comparator.comparing(Item::getXr).thenComparing(Item::getRc).reversed()); // Ordinamento base
-	
-//		items.sort(Comparator.comparing(Item::getXr).thenComparing(Item::getGoodness).reversed()); // Primi per value, altri per goodness
-//		items.sort(Comparator.comparing(Item::getGoodness).reversed()); // Sorter solo per goodness
 		
 		List<Item> y_items=items.stream().filter(p -> p.getName().startsWith("y")).collect(Collectors.toList());
 		List<Item> fin_item = new ArrayList<Item>();
@@ -26,8 +23,10 @@ public class ItemSorterByName implements ItemSorter
 			x_list = items.stream().filter(p -> p.getName().startsWith("x_"+fam) && p.getName().endsWith("_"+knap)).collect(Collectors.toList());
 			
 			fin_item.add(y_it);
-			// Riordino anche le x in base alla goodness
-			x_list.sort(Comparator.comparing(Item::getGoodness).reversed()); // Ho tolto l'ordinamento per value prima
+			
+			// X list sorted by goodness
+			x_list.sort(Comparator.comparing(Item::getGoodness).reversed());
+			
 			fin_item.addAll(x_list);
 		}
 		items.clear();

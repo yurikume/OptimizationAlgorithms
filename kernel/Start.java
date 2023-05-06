@@ -3,14 +3,13 @@ package kernel;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class Start{
 	
 	public static void main(String[] args){
 		ArrayList<String> instance = new ArrayList<>();
 		
+		// list of instances to execute		
 		instance.add("5_10_1");
 //		instance.add("5_10_2");
 //		instance.add("5_10_5");
@@ -48,23 +47,20 @@ public class Start{
 //		instance.add("20_30_4");
 //		instance.add("20_30_10");
 		
-		int conf = 4;
 		String[] istanza;
 		String pathmps;
 		String pathlog = ".";
-		String pathConfig = "config" + conf + ".txt";
-		
+		String pathConfig = "config.txt";
 		try {
-	        PrintWriter out = new PrintWriter("results_prova_" + conf + ".txt");
+	        PrintWriter out = new PrintWriter("results_prova.txt");
 	        Configuration config = ConfigurationReader.read(pathConfig);
-	        out.println(String.format("Riassunto configurazione(KS: %.3f - BS: %.3f - ITLIMS: %d - TLKER: %d - TLBUCK: %d)", config.getKernelSize(),config.getBucketSize(),config.getItemsLimit(),config.getTimeLimitKernel(),config.getTimeLimitBucket()));
+	        out.println(String.format("Configuration recap (KS: %.3f - BS: %.3f - ITLIMS: %d - TLKER: %d - TLBUCK: %d)", config.getKernelSize(),config.getBucketSize(),config.getItemsLimit(),config.getTimeLimitKernel(),config.getTimeLimitBucket()));
 					
 	        for (int i = 0; i < instance.size(); i++){
 				pathmps = "./MK/INS_" + instance.get(i) + "v.dat";
 				config = ConfigurationReader.read(pathConfig);
 				KernelSearch ks = new KernelSearch(pathmps, pathlog, config);
 				ks.start();
-				//List<List<Double>> objValues = ks.getObjValues();
 				istanza = instance.get(i).split("_");
 				out.println(istanza[0] + " & " + istanza[1] + " & " + istanza[2] + " & " + ks.getCurrent_best() + " & " + ks.getTot_time() + " \\\\");
 			}

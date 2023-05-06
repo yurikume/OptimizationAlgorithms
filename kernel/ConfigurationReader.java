@@ -79,7 +79,7 @@ public class ConfigurationReader
         					config.setBucketBuilder(new OverlappingBucketBuilder());
         					break;
         				case 3:
-        					config.setBucketBuilder(new OverlappingBucketBuilder2());
+        					config.setBucketBuilder(new OverlappingBucketBuilderNew());
         					break;
         				case 4:
         					config.setBucketBuilder(new BucketBuilderByName());

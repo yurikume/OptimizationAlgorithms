@@ -2,7 +2,7 @@ package kernel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OverlappingBucketBuilder2 implements BucketBuilder
+public class OverlappingBucketBuilderNew implements BucketBuilder
 {
 	@Override
 	public List<Bucket> build(List<Item> items, Configuration config,List<Item> y_ker)
@@ -11,9 +11,6 @@ public class OverlappingBucketBuilder2 implements BucketBuilder
 		Bucket b = new Bucket();
 		int size = (int) Math.floor(items.size()*config.getBucketSize());
 		int size_first_bucket = (int) Math.floor(1.5 * items.size()*config.getKernelSize());
-		
-		System.out.println("size = " + size);
-		System.out.println("size_first_bucket = " + size_first_bucket);
 		
 		for(int i=0; i<size_first_bucket; i++) {
 			b.addItem(items.get(i));
@@ -36,7 +33,6 @@ public class OverlappingBucketBuilder2 implements BucketBuilder
 					items.remove(j);
 				}
 			}
-			System.out.println("size b = " + new_b.size());
 			buckets.add(new_b);
 			b = new_b;
 		}
@@ -53,8 +49,7 @@ public class OverlappingBucketBuilder2 implements BucketBuilder
 				items.remove(i);
 			}
 		}
-		
-		System.out.println("size b = " + new_b.size());
+
 		buckets.add(new_b);
 		
 		return buckets;

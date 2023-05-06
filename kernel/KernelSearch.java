@@ -62,7 +62,7 @@ public class KernelSearch
 		items = buildItems();
 		sorter.sort(items);	
 		
-		// Stampa degli items con i loro dati in un file esterno
+		// Print out the items in an external file
 		try {
 	        PrintWriter out = new PrintWriter("items_list.txt");
 	        out.println("****** Items dopo il sorting:");
@@ -73,9 +73,6 @@ public class KernelSearch
 		    for(Item it: items) {
 				a = it.getWeight();
 				c = it.getProfit();
-				// Calcoliamo la goodness, che è una misura da massimizzare. Preferiamo in questo modo item
-				// con peso piccolo e differenza tra profitto e peso elevata, che abbiamo visto anche dalle soluzioni essere
-				// i migliori
 				perc_good = it.getGoodness();
 				out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - c = " + c + " - a = " + a + " - good% = " + perc_good);
 		    }
@@ -87,19 +84,10 @@ public class KernelSearch
 	      e.printStackTrace();
 		}
 		
-//		kernel = kernelBuilder.build(items, config);
-//		buckets = bucketBuilder.build(items.stream().filter(it -> !kernel.contains(it)).collect(Collectors.toList()), config);
-		
-		// Solo kernel by goodness
 		kernel = kernelBuilder.build(items, config);
 		List<Item> sel_items = items.stream().filter(it -> it.getName().startsWith("y") || !kernel.contains(it)).collect(Collectors.toList());
 		List<Item> y_ker = items.stream().filter(it -> kernel.contains(it) && it.getName().startsWith("y")).collect(Collectors.toList());
-//		for(Item it : kernel.getItems()) {
-//			if(it.getName().startsWith("y")) {
-//				sel_items.add(it);
-//			}
-//		}
-//		sorter.sort(sel_items);
+
 		buckets = bucketBuilder.build(sel_items, config, y_ker);
 		solveKernel();
 		iterateBuckets();
@@ -133,7 +121,8 @@ public class KernelSearch
 	            a = model.getWeight(i, j);
 	            good = (c-a)*100.0/a;
 				it = new Item(v, value, rc, c, a, good);
-			}else { // è un item y
+			}else {
+				// y item
 				String vars[]= v.split("_");
 				i = Integer.parseInt(vars[1]);
 				t = Integer.parseInt(vars[2]);
@@ -144,9 +133,10 @@ public class KernelSearch
 				
 			items.add(it);
 		}
-		// Ora che ho tutti gli items x inizializzati, posso calcolare la goodness delle y
+
+		// Now that we have initialized all the x items, we can evaluate the goodness of the y items
 		List<Item> y_items = items.stream().filter(it -> it.getName().startsWith("y")).collect(Collectors.toList());
-		int fam_setup_cost,fam_weight,knap_cap,weight_measure,profit_measure;
+		int fam_setup_cost,fam_weight,knap_cap,profit_measure;
 		double weight_percentage, y_goodness, res_knap_cap;
 		
 		for(Item y_it : y_items) {
@@ -165,17 +155,20 @@ public class KernelSearch
 				items_profit += x_it.getProfit();
 			}
 			
-			res_knap_cap = knap_cap - fam_weight; // Capacità residua del knapsack per inserire gli item
-			weight_percentage = res_knap_cap/items_weight; // Percentuale di item che ci stanno nel knapsack
+			// residual capacity of the knapsack
+			res_knap_cap = knap_cap - fam_weight;
+			// percentage of items that fit the knapsack
+			weight_percentage = res_knap_cap/items_weight;
+			
+			// if it is above 1.0 it means that all the items can fit in
 			if(weight_percentage >= 1.0)
 				weight_percentage = 1.0;
 			
-//			weight_measure = (items_weight + fam_weight) - knap_cap; // Da minimizzare
-			profit_measure = items_profit + fam_setup_cost; // Setup cost è negativo (da massimizzare)
+			// the setup cost is negative
+			profit_measure = items_profit + fam_setup_cost; 
 			
 			y_goodness = profit_measure * weight_percentage; 
-			// Prendo il profit che otterrei mettendo tutti gli items nel knapsack e lo moltiplico per la percentuale
-			// di items che può essere in esso inserita ottenuta dalla stima precedente
+			
 			y_it.setGoodness(y_goodness);
 		}
 		return items;
@@ -193,23 +186,12 @@ public class KernelSearch
 			model.readSolution(bestSolution);
 		}
 		
-		System.out.println("Dimensione items: "+items.size());
 		List<Item> toDisable = items.stream().filter(it -> !kernel.contains(it)).collect(Collectors.toList());
-		// Stampa item disabilitati
-		// toDisable.stream().forEach(it->System.out.println(it.getName()));
+		
 		model.disableItems(toDisable);
 		model.setCallback(callback);
 		
-		// Stampa items del kernel
-//		System.out.println("****** Items su cui opera il kernel :");
-//		System.out.println("Num items = " + kernel.getItems().size());
-//		kernel.getItems().stream().forEach(it->System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - good% = " + it.getGoodness()));
-		
 		model.solve();
-		// Aggiunta
-//		for(Item it : model.getSelectedItems(kernel.getItems())) {
-//			it.set_in_kernel(true);
-//		}
 		
 		if(model.hasSolution())
 		{
@@ -227,22 +209,20 @@ public class KernelSearch
 	
 	private void iterateBuckets()
 	{
-		// Se ho la configurazione BucketBuilder 6 (e Kernel Builder 4), che è quella del nuovo algoritmo, eseguo 
-		// due volte solve buckets in modi differenti
-		// In questo caso il parametro Numiterations non influenza, ma serve Itemslimit
+		// if we are using Two-Phase we are not taking in consideration the "NUMITERATIONS" parameter in the configuration
+		// since we are going to run the solveBuckets function in two different ways
+		
 		if(config.getBucketBuilder() instanceof BucketBuilderByGoodness) {
-			solveBuckets(); // Eseguo la prima iterazione con i primi items_limit items di ogni famiglia
-			// Dopo aver fatto la prima iterazione seleziono le y che ci sono nel kernel con tutte le loro x e uso queste
-			// come sottoinsieme di items per fare la seconda iterazione
-			System.out.println("\n\n****** INIZIO ITERAZIONE 2 ********");
-			System.out.println("Tempo iterazione 1: " + Duration.between(startTime, Instant.now()).getSeconds());
+			// first phase
+			solveBuckets(); 
+			
+			// second phase
+			System.out.println("\n\n****** START 2ND PHASE ********");
+			System.out.println("Time first phase: " + Duration.between(startTime, Instant.now()).getSeconds());
 			config.setBucketBuilder(new BucketBuilderByName());
 			config.setKernelBuilder(new KernelBuilderByNamePercentage());
-			// Stampa items del kernel
-			//kernel.getItems().stream().forEach(it->System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - good% = " + it.getGoodness()));
 			
 			List<Item> y_ker = items.stream().filter(it -> kernel.contains(it) && it.getName().startsWith("y")).collect(Collectors.toList());
-			System.out.println("Num famiglie selezionate dalla prima iterazione: "+y_ker.size());
 			List<Item> newItems = new ArrayList<Item>();
 			for(Item y_it : y_ker) {
 				String vars[]= y_it.getName().split("_");
@@ -251,15 +231,11 @@ public class KernelSearch
 	            
 	            newItems.addAll(items.stream().filter(p -> p.getName().startsWith("x_"+fam) && p.getName().endsWith("_"+knap)).collect(Collectors.toList()));
 			}
-			newItems.addAll(y_ker); // Lista degli item da usare nella seconda iterazione
-			// Da qui devo rifare la kernel search sui nuovi items
+			// list of items to use during the second phase
+			newItems.addAll(y_ker); 
 			sorter.sort(newItems);
-			
-			// Stampa nuovi items
-//			System.out.println("NUOVI ITEMS");
-//			newItems.stream().forEach(it->System.out.println(it.getName()));
 						
-			kernelBuilder = config.getKernelBuilder(); // Il kernel builder by name prende tutte le famiglie con value positivo
+			kernelBuilder = config.getKernelBuilder();
 			kernel = kernelBuilder.build(newItems, config);
 			List<Item> sel_items = newItems.stream().filter(it -> it.getName().startsWith("y") || !kernel.contains(it)).collect(Collectors.toList());
 			y_ker = newItems.stream().filter(it -> kernel.contains(it) && it.getName().startsWith("y")).collect(Collectors.toList());
@@ -267,9 +243,12 @@ public class KernelSearch
 			buckets = bucketBuilder.build(sel_items, config, y_ker);
 			
 			solveKernel();
-			solveBuckets(); // Nella seconda iterazione considero solo un sottoinsieme degli items 
-		}else {
-			// In tutti gli altri casi eseguo un certo numero di iterazioni della kernel search
+			solveBuckets();
+			
+		} else {
+			
+			// We take in consideration the "NUMITERATION" parameter
+			
 			for (int i = 0; i < numIterations; i++)
 			{
 				if(getRemainingTime() <= timeThreshold)
@@ -283,7 +262,7 @@ public class KernelSearch
 		}
 		current_best = bestSolution.getObj();
 		tot_time = Duration.between(startTime, Instant.now()).getSeconds();
-		System.out.println("Tempo totale:" + tot_time);
+		System.out.println("Total time:" + tot_time);
 		
 	}
 	
@@ -298,34 +277,17 @@ public class KernelSearch
 	private void solveBuckets()
 	{
 		int count = 0;
-		boolean first_iter = true;
 		
 		for(Bucket b : buckets) {
 			System.out.println("\n\n\n\n\t\t** Solving bucket "+count++ +" **\n");
 			
-//			System.out.println("****** Items contenuti nel kernel:");
-//			kernel.getItems().stream().forEach(it->System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - good% = " + it.getGoodness()));
-			
-			// Stampa items del bucket
-//			System.out.println("\n****** Items su cui opera il bucket:");
-//			System.out.println("Num items = " + b.getItems().size());
-//			b.getItems().stream().forEach(it->System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - good% = " + it.getGoodness()));
-			
-			System.out.println("****** Items contenuti nel kernel");
-			System.out.println("Num items = " + kernel.getItems().size());
-			
-//			for(Item it: kernel.getItems()) {
-//				System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - good% = " + it.getGoodness());
-//			}
-			
-			// Devo aggiungere/togliere gli item al bucket prima di questa riga che mi disabilita gli item per il modello
 			List<Item> toDisable = items.stream().filter(it -> !kernel.contains(it) && !b.contains(it)).collect(Collectors.toList());
 			
 			Model model = new Model(instPath, logPath, Math.min(tlimBucket, getRemainingTime()), config, false);	
 			model.buildModel();
 			
 			model.disableItems(toDisable);
-			model.addBucketConstraint(b.getItems()); // can we use this constraint regardless of the type of variables chosen as items?			
+			model.addBucketConstraint(b.getItems());		
 			
 			if(!bestSolution.isEmpty())
 			{
@@ -341,73 +303,8 @@ public class KernelSearch
 				bestSolution = model.getSolution();
 				List<Item> selected = model.getSelectedItems(b.getItems());
 				
-//				for(Item it: selected){
-//					kernel.addItem(it);
-//					b.removeItem(it);
-//					it.set_in_kernel(true);
-//				}
-				
 				selected.forEach(it -> kernel.addItem(it));
 				selected.forEach(it -> b.removeItem(it));
-				
-//				selected.forEach(it -> it.set_in_kernel(true));
-//				List<Item> non_selected = items.stream().filter(it -> !selected.contains(it)).collect(Collectors.toList());
-//				non_selected.forEach(it -> it.set_in_kernel(false));
-//	
-//				int num_items_da_reinserire = 3;
-//				int cont = 0;
-//				List<Item> x_items_non_selected = new ArrayList<Item>();
-//				
-//				List<Item> y_items_non_selected = non_selected.stream().filter(it -> it.getName().startsWith("y")).collect(Collectors.toList());
-//				for(Item y_item: y_items_non_selected) {
-//					kernel.addItem(y_item); // Qui ogni volta mette TUTTE le y nel kernel
-//					y_item.set_in_kernel(true);
-//					
-//					String vars[]= y_item.getName().split("_");
-//		            String fam = vars[1];
-//		            String knap = vars[2];
-//					
-//					x_items_non_selected = non_selected.stream().filter(p -> p.getName().startsWith("x_"+fam) && p.getName().endsWith("_"+knap)).collect(Collectors.toList());
-//					
-//					for(Item x_item: x_items_non_selected) {
-//						kernel.addItem(x_item);
-//						x_item.set_in_kernel(true);
-//						
-//						cont++;
-//						if(cont >= num_items_da_reinserire) break;
-//					}
-//				}
-				
-				
-				// INIZIO MODIFICA REINSERIMENTO ITEMS
-				// Promising items chosen through the goodness measure
-//				double perc_good;
-//				double threshold = 0.5; // è un esempio
-//				int a,c;
-//				// We iterate over the remaining items in the bucket, i.e. the ones that have not been selected 
-//				for(Item it : b.getItems()) {
-//					String name = it.getName();
-//					c = it.getProfit();
-//		            a = it.getWeight();
-//					perc_good = it.getGoodness();
-//		            System.out.println(String.format("%s, good_perc: %f, c: %d, a: %d ",name,perc_good,c,a));
-//					if(name.startsWith("x") && perc_good > threshold) {
-//			            System.out.println("Item " + name + " added!");
-//		            	kernel.addItem(it);
-//					}	
-//				}
-				
-//				System.out.println("****** Items rimasti nel bucket " + count + " :");
-//				for(Item it: b.getItems()) {
-//					System.out.println(it.getName() + " - value = " + model.getVarValue(it.getName()));
-//				}
-				
-				// Stampa items selezionati dal bucket
-//				System.out.println("****** Items selezionati dal bucket " + count + " :");
-//				System.out.println("Num items = " + selected.size());
-//				selected.stream().forEach(it->System.out.println(it.getName() + " :" + it.getRc() + " - value = " + it.getXr() + " - good% = " + it.getGoodness()));
-				
-				// FINE MODIFICA
 				
 				model.exportSolution();
 			}
