@@ -9,7 +9,7 @@ public class Start{
 	public static void main(String[] args){
 		ArrayList<String> instance = new ArrayList<>();
 		
-		// list of instances to execute		
+		// List of instances to execute		
 		instance.add("5_10_1");
 //		instance.add("5_10_2");
 //		instance.add("5_10_5");
@@ -70,9 +70,6 @@ public class Start{
 	    }catch (IOException e) {
 	      System.out.println("An error occurred.");
 	      e.printStackTrace();
-		}
-		
-		
-			
+		}		
 	}
 }

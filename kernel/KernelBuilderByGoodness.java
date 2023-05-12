@@ -11,7 +11,7 @@ public class KernelBuilderByGoodness implements KernelBuilder {
 		Kernel kernel = new Kernel();
 		List<Item> y_items=items.stream().filter(p -> p.getName().startsWith("y")).collect(Collectors.toList());
 		
-		// number of items to take in consideration
+		// Number of items to consider for each family
 		int items_limit = config.getItemsLimit();
 		
 		int size;

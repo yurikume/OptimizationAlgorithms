@@ -62,7 +62,7 @@ public class KernelSearch
 		items = buildItems();
 		sorter.sort(items);	
 		
-		// Print out the items in an external file
+		// Print all the items in an external file
 		try {
 	        PrintWriter out = new PrintWriter("items_list.txt");
 	        out.println("****** Items dopo il sorting:");
@@ -155,16 +155,16 @@ public class KernelSearch
 				items_profit += x_it.getProfit();
 			}
 			
-			// residual capacity of the knapsack
+			// Residual capacity of the knapsack
 			res_knap_cap = knap_cap - fam_weight;
-			// percentage of items that fit the knapsack
+			// Percentage of items that fit the knapsack
 			weight_percentage = res_knap_cap/items_weight;
 			
-			// if it is above 1.0 it means that all the items can fit in
+			// If it is above 1.0 it means that all the items can fit the knapsack
 			if(weight_percentage >= 1.0)
 				weight_percentage = 1.0;
 			
-			// the setup cost is negative
+			// The fam_setup_cost is negative
 			profit_measure = items_profit + fam_setup_cost; 
 			
 			y_goodness = profit_measure * weight_percentage; 
@@ -209,14 +209,14 @@ public class KernelSearch
 	
 	private void iterateBuckets()
 	{
-		// if we are using Two-Phase we are not taking in consideration the "NUMITERATIONS" parameter in the configuration
+		// If we are using Two-Phase we are not taking into consideration the "NUMITERATIONS" parameter in the configuration
 		// since we are going to run the solveBuckets function in two different ways
 		
 		if(config.getBucketBuilder() instanceof BucketBuilderByGoodness) {
-			// first phase
+			// First phase
 			solveBuckets(); 
 			
-			// second phase
+			// Second phase
 			System.out.println("\n\n****** START 2ND PHASE ********");
 			System.out.println("Time first phase: " + Duration.between(startTime, Instant.now()).getSeconds());
 			config.setBucketBuilder(new BucketBuilderByName());
@@ -231,10 +231,10 @@ public class KernelSearch
 	            
 	            newItems.addAll(items.stream().filter(p -> p.getName().startsWith("x_"+fam) && p.getName().endsWith("_"+knap)).collect(Collectors.toList()));
 			}
-			// list of items to use during the second phase
+			// List of all items we use during the second phase
 			newItems.addAll(y_ker); 
 			sorter.sort(newItems);
-						
+			
 			kernelBuilder = config.getKernelBuilder();
 			kernel = kernelBuilder.build(newItems, config);
 			List<Item> sel_items = newItems.stream().filter(it -> it.getName().startsWith("y") || !kernel.contains(it)).collect(Collectors.toList());
@@ -247,7 +247,7 @@ public class KernelSearch
 			
 		} else {
 			
-			// We take in consideration the "NUMITERATION" parameter
+			// Here we use the NUMITERATION parameter 
 			
 			for (int i = 0; i < numIterations; i++)
 			{

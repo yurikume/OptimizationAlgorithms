@@ -24,7 +24,7 @@ public class ItemSorterByName implements ItemSorter
 			
 			fin_item.add(y_it);
 			
-			// X list sorted by goodness
+			// list of x items sorted by goodness
 			x_list.sort(Comparator.comparing(Item::getGoodness).reversed());
 			
 			fin_item.addAll(x_list);

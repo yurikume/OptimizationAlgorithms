@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 public class BucketBuilderByName implements BucketBuilder
 {
-	// Also here we put a percentage of y items and their corresponding x in the same bucket
+	// Here we put a percentage of y items and their corresponding x into the same bucket
 	@Override
 	public List<Bucket> build(List<Item> items, Configuration config, List<Item> y_ker)  
 	{
@@ -15,7 +15,7 @@ public class BucketBuilderByName implements BucketBuilder
 		// We insert all the y that are not in the kernel in the y_items list
 		List<Item> y_items=items.stream().filter(it -> it.getName().startsWith("y") && !y_ker.contains(it)).collect(Collectors.toList());
 		
-		// We take in consideration only a percentage of the y variables to insert into the buckets
+		// We take into consideration only a percentage of the y variables to insert into the buckets
 		int y_da_prendere = (int)Math.ceil(y_items.size() * config.getBucketSize());
 		int i = 0;
 		int limit;

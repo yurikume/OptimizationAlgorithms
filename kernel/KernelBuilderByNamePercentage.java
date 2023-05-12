@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 public class KernelBuilderByNamePercentage implements KernelBuilder {
 
-	// Similar to the ByName one but here we consider only a percentage of the families and not all the positive ones
+	// Similar to the ByNamePositive one but here we consider only a percentage of the families and not all the positive ones
 	@Override
 	public Kernel build(List<Item> items, Configuration config) {
 		Kernel kernel = new Kernel();

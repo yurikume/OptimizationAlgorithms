@@ -10,15 +10,15 @@ public class BucketBuilderByGoodness implements BucketBuilder{
 	@Override
 	public List<Bucket> build(List<Item> items, Configuration config, List<Item> y_ker) {
 	
-		// We select only the first few items in each family (for ex. the first half)
-		// It's used in the first phase of the two-phase alg
+		// We select only the first few items in each family 
+		// It's used in the first phase of the two-phase algorithm
 		
 		List<Bucket> buckets = new ArrayList<>();
 		Bucket b = new Bucket();
 
 		List<Item> y_items = items.stream().filter(p -> p.getName().startsWith("y") && !y_ker.contains(p)).collect(Collectors.toList());
 		
-		// number of items to take in consideration for each family
+		// Number of items to take into consideration for each family
 		int items_limit = config.getItemsLimit(); 
 
 		int size = (int) Math.floor(y_items.size() * items_limit * config.getBucketSize());
