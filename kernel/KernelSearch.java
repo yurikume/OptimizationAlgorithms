@@ -31,6 +31,8 @@ public class KernelSearch
 	private List<List<Double>> objValues;
 	private long tot_time;
 	private Double current_best;
+	private long first_phase_time;
+	private Double first_phase_obj;
 	
 	private Instant startTime;
 	
@@ -218,7 +220,12 @@ public class KernelSearch
 			
 			// Second phase
 			System.out.println("\n\n****** START 2ND PHASE ********");
-			System.out.println("Time first phase: " + Duration.between(startTime, Instant.now()).getSeconds());
+			// First phase recap
+			first_phase_obj = bestSolution.getObj();
+			first_phase_time = Duration.between(startTime, Instant.now()).getSeconds();
+			System.out.println("First phase obj: " + first_phase_obj);
+			System.out.println("Time first phase: " + first_phase_time);
+			
 			config.setBucketBuilder(new BucketBuilderByName());
 			config.setKernelBuilder(new KernelBuilderByNamePercentage());
 			
@@ -265,14 +272,6 @@ public class KernelSearch
 		System.out.println("Total time:" + tot_time);
 		
 	}
-	
-	public long getTot_time() {
-		return tot_time;
-	}
-
-	public Double getCurrent_best() {
-		return current_best;
-	}
 
 	private void solveBuckets()
 	{
@@ -316,6 +315,22 @@ public class KernelSearch
 			if(getRemainingTime() <= timeThreshold)
 				return;
 		}		
+	}
+	
+	public long getTot_time() {
+		return tot_time;
+	}
+
+	public Double getCurrent_best() {
+		return current_best;
+	}
+	
+	public long getFirstPhaseTime() {
+		return first_phase_time;
+	}
+	
+	public Double getFirstPhaseObj() {
+		return first_phase_obj;
 	}
 
 	private int getRemainingTime()
