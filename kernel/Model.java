@@ -436,12 +436,7 @@ public class Model
 	
 	public void setCallback(GRBCallback callback) 
 	{ 
-		try {
-			model.setCallback(callback);
-		} catch (GRBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		model.setCallback(callback);
 	}
 	
 	public int getProfit(int i, int j, int t) {
